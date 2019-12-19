@@ -29,7 +29,7 @@ def Convert(_dat_imp, _match, _form):
             _obj_dict = _obj.groupdict()
             if not '_str2' in (str(_obj.re) or _form):
                 if not '_str1' in str(_obj.re):
-                    _str_new = None
+                    _str_new = _form
                 else:
                     _str_new = _form.format(_str1 = _obj_dict['_str1'])
             else:
