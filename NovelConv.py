@@ -42,7 +42,10 @@ def conv_data(_dat_imp):
     _pattern_imp = module_imp.pattern()
     for _key in _pattern_imp.keys():
         if not _key in _form_exp:
-            _form_exp[_key] = '{_str1}'
+            if not '_str1' in str(_pattern_imp[_key]):
+                _form_exp[_key] = None
+            else:
+                _form_exp[_key] = '{_str1}'
     # Delete metadata
     for _num in range(len(_dat_imp)):
         _meta = re.match(r'^# .*?$', _dat_imp[_num])
