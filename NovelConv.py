@@ -50,7 +50,10 @@ def conv_data(_dat_imp):
         for _form in _form_exp.keys():
             _match = convert.getData(_cache, _pattern_imp[_form])
             _cache = convert.Convert(_cache, _match, _form_exp[_form])
-        _dat_exp.append(_cache)
+            if not _cache:
+                break
+        if _cache:
+            _dat_exp.append(_cache)
     return _dat_exp
 
 
