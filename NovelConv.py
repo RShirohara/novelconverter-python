@@ -4,7 +4,12 @@
 
 """Convert novel on python3"""
 
-__version__ = 'test1912'
+__version__ = """
+Novel Convertor command version 1.0(201912)
+Copyrigut (c) 2019 Ray Shirohara
+Released under MIT License.
+https://github.com/RShirohara/NovelConvertor
+"""
 
 import re
 import string
@@ -15,7 +20,7 @@ from module import convert
 
 def get_args():
     """Get argment"""
-    _parser = ArgumentParser(description = "Novel Convertor" + str(__version__) + '\n' + __doc__)
+    _parser = ArgumentParser(description = str(__version__))
     _parser.add_argument('filepath', type = str, help = "Noveldata path")
     _parser.add_argument('formtype', type = str, help = "Format name")
     _parser.add_argument('-i', '--impform', type = str, help = "Set import format name")
