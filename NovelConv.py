@@ -4,7 +4,7 @@
 
 """Convert novel on python3"""
 
-__version__ = 'test1912'
+__version__ = 'Ver 1.0 (201912)'
 
 import re
 import string
