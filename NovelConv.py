@@ -5,8 +5,8 @@
 """Convert novel on python3"""
 
 __version__ = """
-Novel Convertor command version 1.0(201912)
-Copyrigut (c) 2019 Ray Shirohara
+Novel Convertor command version 1.0-fix2(201912)
+Copyright (c) 2019 Ray Shirohara
 Released under MIT License.
 https://github.com/RShirohara/NovelConvertor
 """
@@ -14,13 +14,13 @@ https://github.com/RShirohara/NovelConvertor
 import re
 import string
 import sys
-from argparse import ArgumentParser
+import argparse
 from module import convert
 
 
 def get_args():
     """Get argment"""
-    _parser = ArgumentParser(description = str(__version__))
+    _parser = argparse.ArgumentParser(description = __version__, formatter_class=argparse.RawTextHelpFormatter)
     _parser.add_argument('filepath', type = str, help = "Noveldata path")
     _parser.add_argument('formtype', type = str, help = "Format name")
     _parser.add_argument('-i', '--impform', type = str, help = "Set import format name")
