@@ -21,6 +21,10 @@ $python3 Novelconv.py "filepath" "formtype" (-i, --impform "formtype")
 
 [Github Release](https://github.com/RShirohara/NovelConvertor/releases)
 
+## License
+
+[The MIT License](https://github.com/RShirohara/NovelConvertor/blob/master/LICENSE)
+
 ## Author
 
 [Ray Shirohara](https://github.com/RShirohara/)
