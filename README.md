@@ -1,4 +1,4 @@
-# Novel Convertor
+# Novel Converter
 
 ## Description
 
