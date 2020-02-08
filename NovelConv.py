@@ -3,7 +3,7 @@
 # author: RShirohara
 
 __version__ = """
-Novel Converter ver 2.0-test1(202002)
+Novel Converter ver 2.0(202002)
 Copyright (c) 2019-2020 Ray Shirohara
 Released under MIT License.
 https://github.com/RShirohara/NovelConverter
