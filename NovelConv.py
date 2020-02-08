@@ -16,11 +16,9 @@ import module
 def get_args():
     """Get argument"""
     _parser = argparse.ArgumentParser(description = __version__, formatter_class = argparse.RawDescriptionHelpFormatter)
-    _group_path = _parser.add_mutually_exclusive_group()
-    _group_path.add_argument('path', type = str, help = "Data path")
-    _parser.add_argument('form', type = str, help = "Format name")
-    _parser.add_argument('-i', '--imput_form', type = str, help = "Format type(imput data)")
-    _group_path.add_argument('-s', '--read_stdin', action = 'store_true', help = "Read data from stdin")
+    _parser.add_argument('-p', '--path', type = str, help = 'Data path')
+    _parser.add_argument('form', type = str, help = 'Format type')
+    _parser.add_argument('-f', '--imput_form', help = 'Format type(Imput Data')
     _args = _parser.parse_args()
     return _args
 
@@ -47,10 +45,10 @@ if __name__ == '__main__':
     else:
         form_imp = load_format('default')
     # Load data
-    if args.imput_form:
-        data = sys.stdin.readlines()
-    else:
+    if args.path:
         data = load_data(args.path)
+    else:
+        data = sys.stdin.readlines()
     # Convert
     result = form_exp.Convert(data, form_imp.Pattern)
     # Export
