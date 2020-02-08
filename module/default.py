@@ -34,7 +34,7 @@ class default:
             'url': re.compile(r'\[(?P<_field1>.*?)]\((?P<_field2>.*?)\)'),
         }
 
-    def Convert(self, _data, _meta, _pattern):
+    def Convert(self, _data, _pattern):
         """Convert data"""
         _meta = dict()
         _cache = list()
