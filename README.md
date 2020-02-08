@@ -1,21 +1,21 @@
-# Novel Convertor
+# Novel Converter
 
 ## Description
 
-Python3を使用して、小説(.txt)をフォーマット毎に整形して標準出力で出力します。
+Pythonを使用して、小説をフォーマット毎に整形して標準出力で出力します。
 
 ## Usage
 
 ```bash
-$python3 Novelconv.py "filepath" "formtype" (-i, --impform "formtype")
+$python3 NovelConv.py 'form' [-p 'path'] [-f 'imput_form']
 ```
 
-* "filepath": txtのパス
-* "formtype": フォーマットの名前
-  * markdown    : markdownの形式
-  * pixiv       : [Pixiv](http://pixiv.net)小説の形式
+* "form": フォーマット名
+  * markdown    : markdown形式
+  * pixiv       : [Pixiv](http://pixiv.net)小説形式
   * ddmarkdown  : [でんでんマークダウン](https://conv.denshochan.com/markdown)形式(一部対応)
-* "-i, --impform" : txtファイルの記述フォーマット指定
+* -p 'path' : 入力ファイルのパス (指定が無い場合標準入力から)
+* -f 'imput_form' : 入力のフォーマット指定
 
 ## Install
 
