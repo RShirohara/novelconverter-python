@@ -45,7 +45,7 @@ if __name__ == '__main__':
     if args.imput_form:
         form_imp = load_format(args.imput_form)
     else:
-        form_imp = load_format('ddmarkdown')
+        form_imp = load_format('default')
     # Load data
     if args.imput_form:
         data = sys.stdin.readlines()
