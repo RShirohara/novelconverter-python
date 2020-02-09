@@ -3,7 +3,7 @@
 
 import copy
 import re
-from . import Convert
+from . import convert
 from . import getData
 
 class default:
@@ -60,7 +60,7 @@ class default:
             for _key, _patt in _pattern.items():
                 _match = getData.match(_line, _patt)
                 if _match:
-                    _line = Convert.Convert(_line, _match, self.Format[_key])
+                    _line = convert.Convert(_line, _match, self.Format[_key])
             if _line:
                 _result += _line
         return _result
