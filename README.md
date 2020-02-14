@@ -23,7 +23,7 @@ $python3 NovelConv.py 'form' [-p 'path'] [-f 'imput_form']
 
 ## License
 
-[The MIT License](https://github.com/RShirohara/NovelConvertor/blob/master/LICENSE)
+[The MIT License](./LICENSE)
 
 ## Author
 
