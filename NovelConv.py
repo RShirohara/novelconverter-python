@@ -3,7 +3,7 @@
 # author: RShirohara
 
 __version__ = """
-Novel Converter ver 2.0-fix1(202002)
+Novel Converter ver 2.1(202002)
 Copyright (c) 2019-2020 Ray Shirohara
 Released under MIT License.
 https://github.com/RShirohara/NovelConverter
@@ -27,6 +27,7 @@ def load_format(_name):
     try:
         _form = module.call(_name)
     except ModuleNotFoundError:
+        print(f'{_name} is not found!')
         sys.exit()
     return _form
 
@@ -50,6 +51,6 @@ if __name__ == '__main__':
     else:
         data = sys.stdin.readlines()
     # Convert
-    result = form_exp.Convert(data, form_imp.Pattern)
+    result = form_exp.convert(data, form_imp.Pattern)
     # Export
     print(result)
