@@ -18,7 +18,7 @@ def get_args():
     _parser = argparse.ArgumentParser(description = __version__, formatter_class = argparse.RawDescriptionHelpFormatter)
     _parser.add_argument('-p', '--path', type = str, help = 'Data path')
     _parser.add_argument('form', type = str, help = 'Format type')
-    _parser.add_argument('-f', '--imput_form', help = 'Format type(Imput Data')
+    _parser.add_argument('-f', '--imput_form', help = 'Format type(Imput Data)')
     _args = _parser.parse_args()
     return _args
 
