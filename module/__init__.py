@@ -1,20 +1,16 @@
 # -*- coding: utf-8 -*-
 # author: RShirohara
 
-_format = ('default', 'markdown', 'ddmarkdown', 'pixiv')
+from . import form
 
 def call(_format_name):
     if _format_name == 'default':
-        from . import default
-        return default.default()
-    elif _format_name == 'markdown':
-        from . import markdown
-        return markdown.markdown()
+        return form.Default()
     elif _format_name == 'ddmarkdown':
-        from . import ddmarkdown
-        return ddmarkdown.ddmarkdown()
+        return form.DDMarkdown()
+    elif _format_name == 'markdown':
+        return form.Markdown()
     elif _format_name == 'pixiv':
-        from . import pixiv
-        return pixiv.pixiv()
+        return form.Pixiv()
     else:
         raise ModuleNotFoundError()

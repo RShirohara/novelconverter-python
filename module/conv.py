@@ -4,7 +4,7 @@
 import re
 import string
 
-def Convert(_data, _match, _form):
+def conv(_data, _match, _form):
     """Return converted string"""
     _cache = _data
     for _obj in _match:
@@ -21,6 +21,4 @@ def Convert(_data, _match, _form):
             _new = _form.format(**_new_dict)
         if _new:
             _cache = _cache.replace(_old, _new)
-        else:
-            _cache = None
     return _cache
