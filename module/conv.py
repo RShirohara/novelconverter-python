@@ -2,7 +2,6 @@
 # author: RShirohara
 
 import re
-import string
 
 def conv(_data, _match, _form):
     """Return converted string"""

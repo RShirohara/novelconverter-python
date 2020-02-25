@@ -57,6 +57,9 @@ class Default:
                 else:
                     self.Format[_key] = '{_field1}'
         # Convert
+        if _meta:
+            for _key in _meta.keys():
+                _result += self.Format[_key].format(_field1 = _meta[_key]) + '\n'
         for _line in _cache:
             for _key, _patt in _pattern.items():
                 _match = getData.match(_line, _patt)
@@ -159,6 +162,8 @@ class Markdown:
                 else:
                     self.Format[_key] = '{_field1}'
         # Convert
+        if 'title' in _meta.keys():
+            _result = self.Format['title'].format(_field1 = _meta['title'])
         for _line in _cache:
             for _key, _patt in _pattern.items():
                 _match = getData.match(_line, _patt)
