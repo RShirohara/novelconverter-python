@@ -2,7 +2,16 @@
 # author: RShirohara
 
 import re
-import string
+
+def setPatt(_pattern, _format, _formatName):
+    """Set convert pattern"""
+    for _key, _patt in _pattern.items():
+        if not _key in _formatName:
+            if not '_field1' in _patt.pattern:
+                _format[_key] = None
+            else:
+                _format[_key] = '{_field1}'
+    return _format
 
 def conv(_data, _match, _form):
     """Return converted string"""
