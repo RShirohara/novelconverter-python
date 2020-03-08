@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 # author: RShirohara
 
+from copy import copy
+
 def match(_data, _pattern):
-    """Return matched string"""
+    """Return matched strings"""
     _match = list()
     _pos = 0
     if _data:
@@ -15,11 +17,18 @@ def match(_data, _pattern):
                 _pos = _result.end(0)
     return _match
 
-def meta(_data, _key, _pattern):
-    """Return metadata"""
+def meta(_data, _pattern):
+    """Return metadata and removed strings"""
+    _meta = dict()
+    _cache = list()
     _pattern_match = ('encode', 'title', 'author')
-    if _key in _pattern_match:
-        _match = _pattern.match(_data)
-        if _match:
-            _result = _match.group(1)
-            return _result
+    for _line in _data:
+        _meta_cache = copy(_meta)
+        for _key, _patt in _pattern.items():
+            if _key in _pattern_match:
+                _match = _patt.match(_line)
+                if _match:
+                    _meta[_key] = _match.group(1)
+        if _meta == _meta_cache:
+            _cache.append(_line)
+    return _meta, _cache
