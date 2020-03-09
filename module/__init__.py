@@ -4,13 +4,13 @@
 from . import form
 
 def call(_format_name):
-    if _format_name == 'default':
+    if _format_name == "default":
         return form.Default()
-    elif _format_name == 'ddmarkdown':
+    elif _format_name == "ddmarkdown":
         return form.DDMarkdown()
-    elif _format_name == 'markdown':
+    elif _format_name == "markdown":
         return form.Markdown()
-    elif _format_name == 'pixiv':
+    elif _format_name == "pixiv":
         return form.Pixiv()
     else:
         raise ModuleNotFoundError()
