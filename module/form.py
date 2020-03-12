@@ -54,6 +54,27 @@ class Default:
             _result += _line
         return _result
 
+class Plain:
+    def __init__(self):
+        self.FormatName = {}
+        self.Format = {}
+        self.Pattern = {}
+
+    def convert(self, _data, _pattern):
+        """Convert data"""
+        _result = str()
+        # delete metadata
+        _meta, _cache = getData.meta(_data, _pattern)
+        # Set convert pattern
+        self.Format = conv.setPatt(_pattern, self.Format, self.FormatName)
+        # Convert
+        for _line in _cache:
+            for _key, _patt in _pattern.items():
+                _match = getData.match(_line, _patt)
+                if _match:
+                    _line = conv.conv(_line, _match, self.Format[_key])
+            _result += _line
+        return _result
 
 class DDMarkdown:
     def __init__(self):

@@ -21,8 +21,8 @@ def conv(_data, _match, _form):
         _old = _obj.group(0)
         # Get new string
         _new_dict = _obj.groupdict()
-        if not "_field2" in (str(_obj.re) or _form):
-            if not "_field1" in str(_obj.re):
+        if not "_field2" in (_obj.re.pattern or _form):
+            if not "_field1" in _obj.re.pattern:
                 _new = _form
             else:
                 _new = _form.format(_field1 = _new_dict["_field1"])
@@ -30,4 +30,6 @@ def conv(_data, _match, _form):
             _new = _form.format(**_new_dict)
         if _new:
             _cache = _cache.replace(_old, _new)
+        else:
+            _cache = ""
     return _cache

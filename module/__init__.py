@@ -6,6 +6,8 @@ from . import form
 def call(_format_name):
     if _format_name == "default":
         return form.Default()
+    elif _format_name == "plain":
+        return form.Plain()
     elif _format_name == "ddmarkdown":
         return form.DDMarkdown()
     elif _format_name == "markdown":
