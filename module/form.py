@@ -26,10 +26,10 @@ class Default:
             "encode": re.compile(r"^# encoding: (?P<_field>.*?)$"),
             "author": re.compile(r"^# author: (?P<_field>.*?)$"),
             "title": re.compile(r"^# title: (?P<_field>.*?)$"),
-            "chapter": re.compile(r"## (?P<_field1>.*?)$"),
+            "chapter": re.compile(r"^## (?P<_field1>.*?)$"),
             "image": re.compile(r"!\[(?P<_field1>.*?)\]\((?P<_field2>.*?)\)"),
             "newpage": re.compile(r"^========"),
-            "qwote": re.compile(r"^>(?P<_field1>.*?)$"),
+            "qwote": re.compile(r"^>(?P<_field1>.*?)"),
             "ruby": re.compile(r"{(?P<_field1>.*?)\|(?P<_field2>.*?)}"),
             "tate-chu-yoko": re.compile(r"\^(?P<_field1>.*?)\^"),
             "url": re.compile(r"\[(?P<_field1>.*?)]\((?P<_field2>.*?)\)"),
@@ -49,10 +49,10 @@ class Default:
         for _line in _cache:
             for _key, _patt in _pattern.items():
                 _match = getData.match(_line, _patt)
-                if _match:
-                    _line = conv.conv(_line, _match, self.Format[_key])
+                _line = conv.conv(_line, _match, self.Format[_key])
             _result += _line
         return _result
+
 
 class Plain:
     def __init__(self):
@@ -71,10 +71,10 @@ class Plain:
         for _line in _cache:
             for _key, _patt in _pattern.items():
                 _match = getData.match(_line, _patt)
-                if _match:
-                    _line = conv.conv(_line, _match, self.Format[_key])
+                _line = conv.conv(_line, _match, self.Format[_key])
             _result += _line
         return _result
+
 
 class DDMarkdown:
     def __init__(self):
@@ -89,10 +89,10 @@ class DDMarkdown:
             "url": "[{_field1}]({_field2})",
         }
         self.Pattern = {
-            "chapter": re.compile(r"## (?P<_field1>.*?)$"),
+            "chapter": re.compile(r"^## (?P<_field1>.*?)$"),
             "image": re.compile(r"!\[(?P<_field1>.*?)\]\((?P<_field2>.*?)\)"),
             "newpage": re.compile(r"^========"),
-            "qwote": re.compile(r"^>(?P<_field1>.*?)$"),
+            "qwote": re.compile(r"^>(?P<_field1>.*?)"),
             "ruby": re.compile(r"{(?P<_field1>.*?)\|(?P<_field2>.*?)}"),
             "tate-chu-yoko": re.compile(r"\^(?P<_field1>.*?)\^"),
             "url": re.compile(r"\[(?P<_field1>.*?)]\((?P<_field2>.*?)\)"),
@@ -109,8 +109,7 @@ class DDMarkdown:
         for _line in _cache:
             for _key, _patt in _pattern.items():
                 _match = getData.match(_line, _patt)
-                if _match:
-                    _line = conv.conv(_line, _match, self.Format[_key])
+                _line = conv.conv(_line, _match, self.Format[_key])
             _result += _line
         return _result
 
@@ -127,9 +126,9 @@ class Markdown:
         }
         self.Pattern = {
             "title": re.compile(r"^# (?P<_field>.*?)$"),
-            "chapter": re.compile(r"## (?P<_field1>.*?)$"),
+            "chapter": re.compile(r"^## (?P<_field1>.*?)$"),
             "image": re.compile(r"!\[(?P<_field1>.*?)\]\((?P<_field2>.*?)\)"),
-            "qwote": re.compile(r"^>(?P<_field1>.*?)$"),
+            "qwote": re.compile(r"^>(?P<_field1>.*?)"),
             "url": re.compile(r"\[(?P<_field1>.*?)\]\((?P<_field2>.*?)\)"),
         }
 
@@ -146,8 +145,7 @@ class Markdown:
         for _line in _cache:
             for _key, _patt in _pattern.items():
                 _match = getData.match(_line, _patt)
-                if _match:
-                    _line = conv.conv(_line, _match, self.Format[_key])
+                _line = conv.conv(_line, _match, self.Format[_key])
             _result += _line
         return _result
 
@@ -163,7 +161,7 @@ class Pixiv:
             "url": "[jumpurl:{_field1}>{_field2}]",
         }
         self.Pattern = {
-            "chapter": re.compile(r"\[chapter:(?P<_field1>.*?)$\]"),
+            "chapter": re.compile(r"^\[chapter:(?P<_field1>.*?)$\]"),
             "image": re.compile(r"!\[pixivimage:(?P<_field1>.*?)\]"),
             "newpage": re.compile(r"^\[newpage\]$"),
             "ruby": re.compile(r"\[\[rb:(?P<_field1>.*?)>(?P<_field2>.*?)\]\]"),
@@ -181,7 +179,6 @@ class Pixiv:
         for _line in _cache:
             for _key, _patt in _pattern.items():
                 _match = getData.match(_line, _patt)
-                if _match:
-                    _line = conv.conv(_line, _match, self.Format[_key])
+                _line = conv.conv(_line, _match, self.Format[_key])
             _result += _line
         return _result

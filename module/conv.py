@@ -21,13 +21,18 @@ def conv(_data, _match, _form):
         _old = _obj.group(0)
         # Get new string
         _new_dict = _obj.groupdict()
-        if not "_field2" in (_obj.re.pattern or _form):
-            if not "_field1" in _obj.re.pattern:
-                _new = _form
-            else:
-                _new = _form.format(_field1 = _new_dict["_field1"])
+        if not _form:
+            _new = None
         else:
-            _new = _form.format(**_new_dict)
+            if not "_field2" in (_obj.re.pattern or _form):
+                if not "_field1" in _form:
+                    _new = _form
+                elif (not "_field1" in _obj.re.pattern) or ((_obj.endpos == len(_data)) and ("$" in _obj.re.pattern)):
+                    _new = None
+                else:
+                    _new = _form.format(_field1 = _new_dict["_field1"])
+            else:
+                _new = _form.format(**_new_dict)
         if _new:
             _cache = _cache.replace(_old, _new)
         else:

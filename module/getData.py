@@ -2,6 +2,7 @@
 # author: RShirohara
 
 from copy import copy
+import re
 
 def match(_data, _pattern):
     """Return matched strings"""
