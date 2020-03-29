@@ -12,7 +12,7 @@
 
 　これはテルヲ。[teruo](https://nakanoteruo.com)
 　This is test.![test](test.svg)
-> これは引用。
+>これは引用。
 
 　おわり。
 

@@ -2,6 +2,7 @@
 # author: RShirohara
 
 from copy import copy
+import re
 
 def match(_data, _pattern):
     """Return matched strings"""
@@ -21,7 +22,7 @@ def meta(_data, _pattern):
     """Return metadata and removed strings"""
     _meta = dict()
     _cache = list()
-    _pattern_match = ('encode', 'title', 'author')
+    _pattern_match = ("encode", "title", "author")
     for _line in _data:
         _meta_cache = copy(_meta)
         for _key, _patt in _pattern.items():

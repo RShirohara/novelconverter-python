@@ -16,9 +16,9 @@ import module
 def get_args():
     """Get argument"""
     _parser = argparse.ArgumentParser(description = __version__, formatter_class = argparse.RawDescriptionHelpFormatter)
-    _parser.add_argument('-p', '--path', type = str, help = 'Data path')
-    _parser.add_argument('form', type = str, help = 'Format type')
-    _parser.add_argument('-f', '--imput_form', help = 'Format type(Imput Data)')
+    _parser.add_argument("-p", "--path", type = str, help = "Data path")
+    _parser.add_argument("form", type = str, help = "Format type")
+    _parser.add_argument("-f", "--imput_form", help = "Format type(Imput Data)")
     _args = _parser.parse_args()
     return _args
 
@@ -27,24 +27,24 @@ def load_format(_name):
     try:
         _form = module.call(_name)
     except ModuleNotFoundError:
-        print(f'{_name} is not found!')
+        print(f"{_name} is not found!")
         sys.exit()
     return _form
 
 def load_data(_path):
     """Load data"""
-    with open(_path, 'r') as _file:
+    with open(_path, "r") as _file:
         _data = _file.readlines()
     return _data
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     args = get_args()
     # Load Format
     form_exp = load_format(args.form)
     if args.imput_form:
         form_imp = load_format(args.imput_form)
     else:
-        form_imp = load_format('default')
+        form_imp = load_format("default")
     # Load data
     if args.path:
         data = load_data(args.path)
