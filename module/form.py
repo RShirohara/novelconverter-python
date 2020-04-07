@@ -146,7 +146,11 @@ class Markdown:
             for _key, _patt in _pattern.items():
                 _match = getData.match(_line, _patt)
                 _line = conv.conv(_line, _match, self.Format[_key])
+            if len(_line) > 2:
+                _line = _line.replace("\n", "  \n")
             _result += _line
+        # Remove duplicate line breaks
+        _result = re.sub(r"\n\n", "\n", _result, flags = re.DOTALL)
         return _result
 
 
