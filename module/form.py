@@ -150,7 +150,7 @@ class Markdown:
                 _line = _line.replace("\n", "  \n")
             _result += _line
         # Remove duplicate line breaks
-        _result = re.sub(r"\n\n", "\n", _result, flags = re.DOTALL)
+        _result = re.sub(r"\n{3}", "\n\n", _result, flags = re.DOTALL)
         return _result
 
 

@@ -27,7 +27,7 @@ def conv(_data, _match, _form):
             if not "_field2" in (_obj.re.pattern or _form):
                 if not "_field1" in _form:
                     _new = _form
-                elif (not "_field1" in _obj.re.pattern) or ((_obj.endpos == len(_data)) and ("$" in _obj.re.pattern)):
+                elif not "_field1" in _obj.re.pattern:
                     _new = None
                 else:
                     _new = _form.format(_field1 = _new_dict["_field1"])
