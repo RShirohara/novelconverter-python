@@ -24,6 +24,8 @@ def get_args():
 
 def load_format(_name):
     """Load format"""
+    if not _name:
+        _name = "default"
     try:
         _form = module.call(_name)
     except ModuleNotFoundError:
@@ -33,23 +35,20 @@ def load_format(_name):
 
 def load_data(_path):
     """Load data"""
-    with open(_path, "r") as _file:
-        _data = _file.readlines()
+    if _path:
+        with open(_path, "r") as _file:
+            _data = _file.readlines()
+    else:
+        _data = sys.stdin.readlines()
     return _data
 
 if __name__ == "__main__":
     args = get_args()
     # Load Format
     form_exp = load_format(args.form)
-    if args.imput_form:
-        form_imp = load_format(args.imput_form)
-    else:
-        form_imp = load_format("default")
+    form_imp = load_format(args.imput_form)
     # Load data
-    if args.path:
-        data = load_data(args.path)
-    else:
-        data = sys.stdin.readlines()
+    data = load_data(args.path)
     # Convert
     result = form_exp.convert(data, form_imp.Pattern)
     # Export
