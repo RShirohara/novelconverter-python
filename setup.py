@@ -2,11 +2,10 @@
 # author: RShirohara
 
 from setuptools import setup
-import novelconverter
 
 setup(
     name="novelconverter",
-    version=novelconverter.__version__,
+    version="3.0.0",
     author="Ray Shirohara",
     author_email="rshirohara@gmail.com",
     url="https://github.com/RShirohara/NovelConverter",
