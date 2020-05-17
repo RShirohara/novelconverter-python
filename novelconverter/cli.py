@@ -15,7 +15,8 @@ def get_args():
     _parser.add_argument(
         "to_format", type=str, help="Format of the output text")
     _parser.add_argument(
-        "-f", "--from_format", type=str, help="Format of the original text")
+        "-f", "--from_format", type=str, help="Format of the original text",
+        default="ddmarkdown")
     _parser.add_argument(
         "-o", "--output", type=str, help="File path of the output text")
     _parser.add_argument(

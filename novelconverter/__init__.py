@@ -7,7 +7,7 @@ from . import form
 
 
 __version__ = "3.0.0"
-description = """
+description = f"""
 Novel Converter v{__version__}
 Copyright (c) 2019-2020 Ray Shirohara
 Released under MIT License.

@@ -2,23 +2,23 @@
 # author: RShirohara
 
 from setuptools import setup
-from novelconverter import __main__ as main
+import novelconverter
 
 setup(
     name="novelconverter",
-    version=main.__version__,
+    version=novelconverter.__version__,
     author="Ray Shirohara",
     author_email="rshirohara@gmail.com",
     url="https://github.com/RShirohara/NovelConverter",
     description="Convert novel on python",
     license="MIT License",
     install_requires=[
-        "python-markdown",
+        "Markdown",
         "denden_extension",
     ],
     entry_points={
         "console_scripts": [
-            "novelconv = novelconverter.cli:main",
+            "novelconv = novelconverter.cli: main",
         ]
     },
 )
