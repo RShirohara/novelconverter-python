@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 # author: RShirohara
 
-import sys
 import unittest
 
-sys.path.append("../")
-import NovelConverter
+import novelconverter
 
 
 class TestExport(unittest.TestCase):
@@ -19,7 +17,7 @@ class TestExport(unittest.TestCase):
             # Load converted data
             with open("tests/data/ddmarkdown/to_markdown.txt", "r") as _file:
                 _expected = _file.read()
-            _actual = NovelConverter.convert(
+            _actual = novelconverter.convert(
                 data, "ddmarkdown", "markdown")
             self.assertEqual(_expected, _actual)
 
@@ -27,7 +25,7 @@ class TestExport(unittest.TestCase):
             # Load converted data
             with open("tests/data/ddmarkdown/to_pixiv.txt", "r") as _file:
                 _expected = _file.read()
-            _actual = NovelConverter.convert(
+            _actual = novelconverter.convert(
                 data, "ddmarkdown", "pixiv")
             self.assertEqual(_expected, _actual)
 
@@ -35,10 +33,9 @@ class TestExport(unittest.TestCase):
             # Load converted data
             with open("tests/data/ddmarkdown/to_plain.txt", "r") as _file:
                 _expected = _file.read()
-            _actual = NovelConverter.convert(
+            _actual = novelconverter.convert(
                 data, "ddmarkdown", "plain")
             self.assertEqual(_expected, _actual)
-
 
     def test_markdown(self):
         """Test method for markdown"""
@@ -50,7 +47,7 @@ class TestExport(unittest.TestCase):
             # Load converted data
             with open("tests/data/markdown/to_ddmarkdown.txt", "r") as _file:
                 _expected = _file.read()
-            _actual = NovelConverter.convert(
+            _actual = novelconverter.convert(
                 data, "markdown", "markdown")
             self.assertEqual(_expected, _actual)
 
@@ -58,7 +55,7 @@ class TestExport(unittest.TestCase):
             # Load converted data
             with open("tests/data/markdown/to_pixiv.txt", "r") as _file:
                 _expected = _file.read()
-            _actual = NovelConverter.convert(
+            _actual = novelconverter.convert(
                 data, "markdown", "pixiv")
             self.assertEqual(_expected, _actual)
 
@@ -66,7 +63,7 @@ class TestExport(unittest.TestCase):
             # Load converted data
             with open("tests/data/markdown/to_plain.txt", "r") as _file:
                 _expected = _file.read()
-            _actual = NovelConverter.convert(
+            _actual = novelconverter.convert(
                 data, "markdown", "plain")
             self.assertEqual(_expected, _actual)
 
@@ -80,7 +77,7 @@ class TestExport(unittest.TestCase):
             # Load converted data
             with open("tests/data/pixiv/to_ddmarkdown.txt", "r") as _file:
                 _expected = _file.read()
-            _actual = NovelConverter.convert(
+            _actual = novelconverter.convert(
                 data, "pixiv", "markdown")
             self.assertEqual(_expected, _actual)
 
@@ -88,7 +85,7 @@ class TestExport(unittest.TestCase):
             # Load converted data
             with open("tests/data/pixiv/to_markdown.txt", "r") as _file:
                 _expected = _file.read()
-            _actual = NovelConverter.convert(
+            _actual = novelconverter.convert(
                 data, "pixiv", "markdown")
             self.assertEqual(_expected, _actual)
 
@@ -96,7 +93,7 @@ class TestExport(unittest.TestCase):
             # Load converted data
             with open("tests/data/pixiv/to_plain.txt", "r") as _file:
                 _expected = _file.read()
-            _actual = NovelConverter.convert(
+            _actual = novelconverter.convert(
                 data, "pixiv", "plain")
             self.assertEqual(_expected, _actual)
 
