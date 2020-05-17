@@ -1,23 +1,24 @@
 # -*- coding: utf-8 -*-
 # author: RShirohara
 
-from setuptools import setup
+import setuptools
 
-setup(
+setuptools.setup(
     name="novelconverter",
-    version="3.0.0",
+    version="3.0.1",
     author="Ray Shirohara",
     author_email="rshirohara@gmail.com",
     url="https://github.com/RShirohara/NovelConverter",
     description="Convert novel on python",
     license="MIT License",
+    packages=setuptools.find_packages(),
     install_requires=[
         "Markdown",
         "denden_extension",
     ],
     entry_points={
         "console_scripts": [
-            "novelconv = novelconverter.cli: main",
+            "novelconv = novelconverter.cli:main",
         ]
     },
 )

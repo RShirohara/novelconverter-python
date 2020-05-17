@@ -5,7 +5,7 @@
 import argparse
 import sys
 
-from . import convert, description
+from novelconverter import convert, description
 
 
 def get_args():

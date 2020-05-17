@@ -3,10 +3,10 @@
 
 import re
 
-from . import form
+from novelconverter import form
 
 
-__version__ = "3.0.0"
+__version__ = "3.0.1"
 description = f"""
 Novel Converter v{__version__}
 Copyright (c) 2019-2020 Ray Shirohara
