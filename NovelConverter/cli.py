@@ -28,9 +28,9 @@ def load_text(_path):
     """Load the original text"""
     if _path:
         with open(_path, "r") as _file:
-            data = tuple(_file.read())
+            data = _file.read()
     else:
-        data = tuple(sys.stdin.read())
+        data = sys.stdin.read()
     return data
 
 
@@ -47,5 +47,5 @@ def main(self):
     args = get_args()
     original_text = load_text(args.input)
     converted_text = convert(
-        original_text, args.to_format, args.from_format)
+        original_text, args.from_format, args.to_format)
     export_text(converted_text, args.output)
