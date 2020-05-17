@@ -8,7 +8,7 @@ import sys
 from . import convert, description
 
 
-def get_args(self):
+def get_args():
     _parser = argparse.ArgumentParser(
         description=description,
         formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -43,9 +43,13 @@ def export_text(_data, _path):
         sys.stdout.write(_data)
 
 
-def main(self):
+def main():
     args = get_args()
     original_text = load_text(args.input)
     converted_text = convert(
         original_text, args.from_format, args.to_format)
     export_text(converted_text, args.output)
+
+
+if __name__ == "__main__":
+    main()

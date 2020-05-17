@@ -22,9 +22,9 @@ class Pixiv:
             "url": "[jumpurl:{_f1}>{_f2}]",
         }
         self.Pattern = {
-            "chapter": re.compile(r"^\[chapter:(?P<_f1>.*?)$\]"),
+            "chapter": re.compile(r"\[chapter:(?P<_f1>.*?)\]"),
             "image": re.compile(r"!\[pixivimage:(?P<_f1>.*?)\]"),
-            "newpage": re.compile(r"^\[newpage\]$"),
+            "newpage": re.compile(r"\[newpage\]"),
             "ruby": re.compile(r"\[\[rb:(?P<_f1>.*?)>(?P<_f2>.*?)\]\]"),
             "url": re.compile(r"\[jumpurl:(?P<_f1>.*?)>(?P<_f2>.*?)\]"),
         }
@@ -44,16 +44,20 @@ class Pixiv:
     def convert(self, _data, _check_list, _from_pattern):
         """Return the converted data"""
         _converted_data = copy.copy(_data)
-        for _key, _patt in zip(_check_list, _from_pattern.values()):
-            for _match in self.match(_converted_data, _patt):
+        for _key in _check_list:
+            for _match in self.match(_converted_data, _from_pattern[_key]):
                 _old = _match.group(0)
                 _new_dict = _match.groupdict()
-                if "_f2" in _patt.re.pattern and self.Format[_key]:
+                if "_f2" in _match.re.pattern and self.Format[_key]:
                     _new = self.Format[_key].format(**_new_dict)
-                elif "_f1" in _patt.re.pattern:
+                elif "_f1" in _match.re.pattern:
                     _new = self.Format[_key].format(
                         _f1=_new_dict["_f1"])
                 else:
                     _new = self.Format[_key]
                 _converted_data = _converted_data.replace(_old, _new)
+        while True:
+            if "\n\n\n" not in _converted_data:
+                break
+            _converted_data = _converted_data.replace("\n\n\n", "\n\n")
         return _converted_data

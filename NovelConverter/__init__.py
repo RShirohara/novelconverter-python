@@ -17,19 +17,24 @@ https://github.com/RShirohara/NovelConverter
 
 def set_pattern(_from_format, _to_format):
     """Sets an output format name"""
+    _metadata = (
+        "encode",
+        "author",
+        "title",
+    )
     for _key, _form in _from_format.items():
         if _key not in _to_format.keys():
-            if "_f1" in _form:
+            if "_f1" in _form and _key not in _metadata:
                 _to_format[_key] = "{_f1}"
             else:
                 _to_format[_key] = ""
     return _to_format
 
 
-def check(_data, _from_format_name, _to_pattern):
+def check(_data, _from_format_name, _from_pattern):
     """Check the output format"""
-    _result = [_name if re.match(_to_pattern[_name], _data)
-               else "" for _name in _from_format_name]
+    _result = [_name for _name in _from_format_name
+               if re.search(_from_pattern[_name], _data)]
     return _result
 
 
