@@ -5,12 +5,12 @@
 import argparse
 import sys
 
-from novelconverter import convert, description
+import novelconverter
 
 
 def get_args():
     _parser = argparse.ArgumentParser(
-        description=description,
+        description=novelconverter.description,
         formatter_class=argparse.RawDescriptionHelpFormatter)
     _parser.add_argument(
         "to_format", type=str, help="Format of the output text")
@@ -47,7 +47,7 @@ def export_text(_data, _path):
 def main():
     args = get_args()
     original_text = load_text(args.input)
-    converted_text = convert(
+    converted_text = novelconverter.convert(
         original_text, args.from_format, args.to_format)
     export_text(converted_text, args.output)
 

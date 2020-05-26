@@ -6,7 +6,7 @@ import re
 from novelconverter import form
 
 
-__version__ = "3.0.1"
+__version__ = "3.0.2"
 description = f"""
 Novel Converter v{__version__}
 Copyright (c) 2019-2020 Ray Shirohara
@@ -21,6 +21,7 @@ def set_pattern(_from_format, _to_format):
         "encode",
         "author",
         "title",
+        "chapter"
     )
     for _key, _form in _from_format.items():
         if _key not in _to_format.keys():

@@ -5,7 +5,7 @@ import setuptools
 
 setuptools.setup(
     name="novelconverter",
-    version="3.0.1",
+    version="3.0.2",
     author="Ray Shirohara",
     author_email="rshirohara@gmail.com",
     url="https://github.com/RShirohara/NovelConverter",
@@ -13,8 +13,6 @@ setuptools.setup(
     license="MIT License",
     packages=setuptools.find_packages(),
     install_requires=[
-        "Markdown",
-        "denden_extension",
     ],
     entry_points={
         "console_scripts": [

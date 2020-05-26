@@ -73,8 +73,5 @@ class DDMarkdown:
                 else:
                     _new = self.Format[_key]
                 _converted_data = _converted_data.replace(_old, _new)
-        while True:
-            if "\n\n\n" not in _converted_data:
-                break
-            _converted_data = _converted_data.replace("\n\n\n", "\n\n")
+        _converted_data = re.sub(r"\n{3,}", "\n\n", _converted_data)
         return _converted_data
