@@ -130,6 +130,3 @@ dmypy.json
 
 # Windows desktop config
 desktop.ini
-
-# VSCode settings
-.vscode
