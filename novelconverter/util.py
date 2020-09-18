@@ -5,22 +5,22 @@
 from collections import namedtuple
 
 
-# "Registry"内で使用されるタプルの定義
+# "Registry"内で使用される名前付きタプルの定義
 _PriorityItem = namedtuple("PriorityItem", ["name", "priority"])
 
 
 class Registry:
-    """優先度順にソートされたレジストリ。
+    """A priority sorted by registry.
 
-    "register"を使用してアイテムを追加し、
-    "deregister"を使用してアイテムを削除する。
-    読み込み後はリストのように振る舞う。
-    例えば:
+    Use "add to add items and "delete" to remove items.
+    A "Registry" instance it like a list when reading data.
+
+    For example:
         reg = Registry()
-        reg.register(hoge(), "Hoge", 20)
-        # インデックスで取得する
+        reg.add(hoge(), "Hoge", 20)
+        # by index
         item = reg[0]
-        # アイテム名で取得する
+        # by name
         item = reg["Hoge"]
     """
 
@@ -33,25 +33,24 @@ class Registry:
         if isinstance(item, str):
             # 同名のアイテムが存在するかを確認
             return item in self._data.keys()
-        # 同じインスタンスが存在するかを確認
-        return item in self.data.values()
+        return item in self._data.values()
 
     def __iter__(self):
         self._sort()
-        return iter([self._data[k] for k, p in self._priority])
+        return iter([self._data[k] for k, v in self._priority])
 
     def __getitem__(self, key):
         self._sort()
         if isinstance(key, slice):
             # スライスで指定した場合
-            data = Registry()
-            for k, p in self._priority[key]:
-                data.register(self._data[k], k, p)
-            return data
+            reg = Registry()
+            for k, v in self._priority[key]:
+                reg.add(self._data[k], k, v)
+            return reg
         if isinstance(key, int):
             # インデックスで指定した場合
             return self._data[self._priority[key].name]
-        # 文字列で指定された場合
+        # 文字列で指定した場合
         return self._data[key]
 
     def __len__(self):
@@ -61,16 +60,16 @@ class Registry:
         return f"<{self.__class__.__name__}({list(self)})>"
 
     def _sort(self):
-        """レジストリを優先度順に並べ替える。"""
+        """Sort the registry by priority."""
         if not self._is_sorted:
             self._priority.sort(key=lambda item: item.priority, reverse=True)
             self._is_sorted = True
 
     def get_index(self, name):
-        """指定された名前のインデックスを返す。
+        """Return the index of the given name
 
         Args:
-            name (str): インデックス名
+            name (str): index name
         """
         if name in self:
             self._sort()
@@ -79,28 +78,29 @@ class Registry:
             )
         raise ValueError(f"No item named {name} exists.")
 
-    def register(self, item, name, priority):
-        """指定した名前と優先度でアイテムをレジストリに追加。
+    def add(self, item, name, priority):
+        """Add an item to the registry with the given name and priority.
 
-        同名のアイテムが存在した場合は上書きされる。
+        If an item is registered with a "name" which already exists, the
+        existing item is replaced with the new item.
 
         Args:
-            item (def): アイテム
-            name (str): アイテム名
-            priority (int): 優先度
+            item (function): item
+            name (str): item name
+            priority (int): priority
         """
         if name in self:
             # 同名のアイテムがある場合削除
-            self.deregister(name)
+            self.delete(name)
         self._is_sorted = False
         self._data[name] = item
         self._priority.append(_PriorityItem(name, priority))
 
-    def deregister(self, name, strict=True):
-        """指定したアイテムをレジストリから削除
+    def delete(self, name, strict=True):
+        """Delete an item to the registry with the given name.
 
         Args:
-            name (str): アイテム名
+            name (str): item name
         """
         try:
             index = self.get_index(name)
