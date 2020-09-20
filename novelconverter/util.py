@@ -45,6 +45,11 @@ class Processor:
     def __init__(self):
         self.reg = Registry()
 
+    def run(self, source):
+        for r in self.reg:
+            source = r(source)
+        return source
+
 
 # "Registry"内で使用される名前付きタプルの定義
 _PriorityItem = namedtuple("PriorityItem", ["name", "priority"])
