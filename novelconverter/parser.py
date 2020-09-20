@@ -2,7 +2,6 @@
 # author: @RShirohara
 
 
-import json
 import re
 
 from . import util
@@ -52,12 +51,19 @@ class Parser(util.Processor):
             _pos = _match.end(1)
             result.append(_match)
         for r in result:
-            _content = str(r.group(1).splitlines()).replace("\'", "\"")
+            if r.group(1)[:8] == "{\"type\":":
+                continue
+            _in_list = []
+            for i in r.group(1).splitlines():
+                if "{\"type\":" in i:
+                    _in_list.append([
+                        i.translate(str.maketrans({"{": "\",{", "}": "},\""}))
+                    ])
+                else:
+                    _in_list.append(i)
+            _content = str(_in_list).replace("\'", "\"")
             _new = "{" + f"\"type\": \"para\", \"content\": {_content}" + "}"
-            try:
-                json.loads(r.group(1))
-            except ValueError:
-                source = source.replace(r.group(1), _new)
+            source = source.replace(r.group(1), _new)
         return source
 
     def header(self, source):
@@ -109,7 +115,7 @@ class Parser(util.Processor):
         pass
 
     def bold(self, source):
-        """Bold in text
+        """Bold text
 
         Example:
             {"type": "bold", "content": ["strings"]}
