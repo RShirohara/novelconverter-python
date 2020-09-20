@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
-# author: RShirohara
+# author: @RShirohara
 
 
+import json
 import re
+
 from . import util
+
+_PARA = re.compile(r"\n\n(.*?)\n\n", re.DOTALL)
 
 
 def build_parser():
@@ -26,14 +30,12 @@ class Parser(util.Processor):
     In most cases, the 0th element in "content" will be output if the
     corresponding "Renderer" does not exist.
     """
-    def __init__(self):
-        self._para = re.compile(r"\n\n(.*?)\n\n", re.DOTALL)
-        self._header = re.compile(
-            r"\n\n(#{1,5}) (.*?) #{0,5}\n\n", re.MULTILINE
-        )
 
     def run(self, source):
         """Run parser"""
+        for i in self.reg:
+            source = i(source)
+        return source.replace("\n\n", "\n")
 
     def para(self, source):
         """Paragraph
@@ -44,17 +46,18 @@ class Parser(util.Processor):
         result = []
         _pos = 0
         while True:
-            _match = re.search(self.para, pos=_pos)
+            _match = _PARA.search(source, pos=_pos)
             if not _match:
                 break
             _pos = _match.end(1)
-            if self._header.match(_match.group(0)):
-                continue
             result.append(_match)
         for r in result:
             _content = str(r.group(1).splitlines()).replace("\'", "\"")
             _new = "{" + f"\"type\": \"para\", \"content\": {_content}" + "}"
-            source.replace(r.group(0), _new)
+            try:
+                json.loads(r.group(1))
+            except ValueError:
+                source = source.replace(r.group(1), _new)
         return source
 
     def header(self, source):
