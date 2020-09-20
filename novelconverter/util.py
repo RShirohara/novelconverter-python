@@ -1,8 +1,49 @@
 # -*- coding: utf-8 -*-
-# author: RShirohara
+# author: @RShirohara
 
 
+import json
 from collections import namedtuple
+
+from .__init__ import __version__ as version
+
+
+class ElementTree:
+    def __init__(self):
+        self.root = {
+            "block": [],
+            "NovelConv-Version": version,
+        }
+
+    def __contains__(self, item):
+        return item in self.root["block"]
+
+    def __getitem__(self, key):
+        if isinstance(key, slice):
+            return self.root["block"][key.start:key.stop]
+        return self.root["block"][key]
+
+    def __iter__(self):
+        return iter(self.root["block"])
+
+    def __len__(self):
+        return len(self.root["block"])
+
+    def __repr__(self):
+        return f"<{self.__class__.__name__}({list(self)})>"
+
+    def parse(self, source):
+        """Parse a JSON-formatted string into a Tree object
+
+        Args:
+            source (str): JSON-formatted string
+        """
+        self.root["block"] = [json.loads(r) for r in source.splitlines() if r]
+
+
+class Processor:
+    def __init__(self):
+        self.reg = Registry()
 
 
 # "Registry"内で使用される名前付きタプルの定義
@@ -15,7 +56,7 @@ class Registry:
     Use "add to add items and "delete" to remove items.
     A "Registry" instance it like a list when reading data.
 
-    For example:
+    Examples:
         reg = Registry()
         reg.add(hoge(), "Hoge", 20)
         # by index
