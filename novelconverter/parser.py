@@ -1,108 +1,53 @@
 # -*- coding: utf-8 -*-
 # author: @RShirohara
 
+import json
 
-import re
-
-from . import util
-
-_PARA = re.compile(r"\n\n(.*?)\n\n", re.DOTALL)
+from .util import Processor
 
 
-def build_parser():
-    """Build the default parsers."""
-    parser = Parser()
+def build_inlineparser():
+    """Build the default inline parsers."""
+    parser = InlineParser()
     # parser.reg.add(item, name, priority)
+    return parser
+
+
+def build_blockparser():
+    """Build the default block parsers."""
+    parser = BlockParser()
+    # parser.reg.add(parser.newpage, "newline", 60)
+    # parser.reg.add(parser.header, "header", 50)
+    # parser.reg.add(parser.code_block, "code_block", 40)
+    # parser.reg.add(parser.item_list, "item_list", 30)
+    # parser.reg.add(parser.quote, "quote", 20)
     parser.reg.add(parser.para, "para", 10)
     return parser
 
 
-class Parser(util.Processor):
+class InlineParser(Processor):
     """Parse strings into a JSON-formatted string
 
     Example:
-        {
-            "type": "parser name"
-            "content": [content]
-        }
+        {"type": "parser name", "content": [content]}
 
     In most cases, the 0th element in "content" will be output if the
     corresponding "Renderer" does not exist.
     """
 
-    def run(self, source):
-        """Run parser"""
-        for i in self.reg:
-            source = i(source)
-        return source.replace("\n\n", "\n")
-
-    def para(self, source):
-        """Paragraph
+    def bold(self, source):
+        """Bold text
 
         Example:
-            {"type": "para", "content": ["content strings"]}
-        """
-        result = []
-        _pos = 0
-        while True:
-            _match = _PARA.search(source, pos=_pos)
-            if not _match:
-                break
-            _pos = _match.end(1)
-            result.append(_match)
-        for r in result:
-            if r.group(1)[:8] == "{\"type\":":
-                continue
-            _in_list = []
-            for i in r.group(1).splitlines():
-                if "{\"type\":" in i:
-                    _in_list.append([
-                        i.translate(str.maketrans({"{": "\",{", "}": "},\""}))
-                    ])
-                else:
-                    _in_list.append(i)
-            _content = str(_in_list).replace("\'", "\"")
-            _new = "{" + f"\"type\": \"para\", \"content\": {_content}" + "}"
-            source = source.replace(r.group(1), _new)
-        return source
-
-    def header(self, source):
-        """Header
-
-        Example:
-            {"type": "header", "content": ["Header name", level]}
+            {"type": "bold", "content": ["strings"]}
         """
         pass
 
-    def quote(self, source):
-        """Quote
+    def image(self, source):
+        """Image
 
         Example:
-            {"type": "quote", "content": ["content strings", level]}
-        """
-        pass
-
-    def item_list(self, source):
-        """Item list
-
-        Example:
-            {"type": "item_list", "content": ["1", "2", ["2-1", "2-2]]}
-        """
-        pass
-
-    def code_block(self, source):
-        """Code block
-
-        Example:
-            {"type": "code_block", "content": ["content strings", "language"]}
-        """
-        pass
-
-    def newpage(self, source):
-        """New page
-
-        Example:
-            {"type": "newpage"}
+            {"type": "image", "content", ["text", "link"]}
         """
         pass
 
@@ -111,14 +56,6 @@ class Parser(util.Processor):
 
         Example:
             {"type": "link", "content": ["strings", "url"]}
-        """
-        pass
-
-    def bold(self, source):
-        """Bold text
-
-        Example:
-            {"type": "bold", "content": ["strings"]}
         """
         pass
 
@@ -138,10 +75,79 @@ class Parser(util.Processor):
         """
         pass
 
-    def image(self, source):
-        """Image
 
-        Example:
-            {"type": "image", "content", ["text", "link"]}
+class BlockParser(Processor):
+    """Parse a JSON-formatted string into a dict object"""
+
+    def para(self, source):
+        """Paragraph
+
+        Returns:
+            dict: {
+                "type": "para",
+                "content": ["content strings"]
+            }
+        """
+        _in_list = []
+        for i in source.splitlines():
+            if "{\"type\":" in i:
+                _in_list.append([
+                    i.translate(str.maketrans({"{": "\",{", "}": "},\""}))
+                ])
+            else:
+                _in_list.append(i)
+        _content = str(_in_list).replace("\'", "\"")
+        _new = "{" + f"\"type\": \"para\", \"content\": {_content}" + "}"
+        return json.loads(_new)
+
+    def header(self, source):
+        """Header
+
+        Returns:
+            dict: {
+                "type": "header",
+                "content": ["Header name", level]
+            }
+        """
+        pass
+
+    def code_block(self, source):
+        """Code block
+
+        Returns:
+            dict: {
+                "type": "code_block",
+                "content": [["content strings"], "language"]
+            }
+        """
+        pass
+
+    def item_list(self, source):
+        """Item list
+
+        Returns:
+            dict: {
+                "type": "item_list",
+                "content": ["1", "2", ["2-1", "2-2"]]
+            }
+        """
+        pass
+
+    def quote(self, source):
+        """Quote
+
+        Returns:
+            dict: {
+                "type": "quote",
+                "content": [["content strings"], level]
+            }
+        """
+        pass
+
+    def newpage(self, source):
+        """New page
+
+        Returns:
+            dict: {"type": "newpage"}
         """
         pass

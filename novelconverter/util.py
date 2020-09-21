@@ -2,16 +2,16 @@
 # author: @RShirohara
 
 
-import json
 from collections import namedtuple
 
-from .__init__ import __version__ as version
+from .__meta__ import __version__ as version
 
 
 class ElementTree:
     def __init__(self):
         self.root = {
-            "block": [],
+            "block": [{}],
+            "meta": {},
             "NovelConv-Version": version,
         }
 
@@ -38,7 +38,23 @@ class ElementTree:
         Args:
             source (str): JSON-formatted string
         """
-        self.root["block"] = [json.loads(r) for r in source.splitlines() if r]
+        _cache = [s for s in source.split("\n\n") if s]
+        _skip = 0
+        for i in range(len(_cache)):
+            if "meta" in self.blockparser.reg:
+                if _meta := self.blockparser.reg["meta"](_cache[i-_skip]):
+                    _skip += 1
+                    self.root["meta"] = _meta
+                    self.blockparser.reg.delete("meta")
+                    continue
+            for r in self.blockparser.reg:
+                _result = r(_cache[i])
+                if not _result:
+                    continue
+                if "type" in self.root["block"][i-_skip].keys():
+                    break
+                self.root["block"].insert(i-_skip, _result)
+        self.root["block"] = [r for r in self.root["block"][:] if r]
 
 
 class Processor:
