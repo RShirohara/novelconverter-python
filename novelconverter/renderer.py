@@ -9,79 +9,85 @@ from . import util
 def build_renderer():
     """Build the default renderers."""
     renderer = Renderer()
-    renderer.reg.add(renderer.newpage, "newline", 110)
-    renderer.reg.add(renderer.header, "header", 100)
-    renderer.reg.add(renderer.code_block, "code_block", 90)
-    renderer.reg.add(renderer.item_list, "item_list", 80)
-    renderer.reg.add(renderer.quote, "quote", 70)
-    renderer.reg.add(renderer.para, "para", 60)
-    renderer.reg.add(renderer.bold, "bold", 50)
-    renderer.reg.add(renderer.image, "image", 40)
-    renderer.reg.add(renderer.link, "link", 30)
-    renderer.reg.add(renderer.ruby, "ruby", 20)
-    renderer.reg.add(renderer.tcy, "tcy", 10)
+    renderer.reg.add(renderer.bold, "bold", 110)
+    renderer.reg.add(renderer.image, "image", 100)
+    renderer.reg.add(renderer.link, "link", 90)
+    renderer.reg.add(renderer.ruby, "ruby", 80)
+    renderer.reg.add(renderer.tcy, "tcy", 70)
+    renderer.reg.add(renderer.newpage, "newpage", 60)
+    renderer.reg.add(renderer.header, "header", 50)
+    renderer.reg.add(renderer.code_block, "code_block", 40)
+    renderer.reg.add(renderer.item_list, "item_list", 30)
+    renderer.reg.add(renderer.quote, "quote", 20)
+    renderer.reg.add(renderer.para, "para", 10)
     return renderer
 
 
 class Renderer(util.Processor):
     """Renders the ElementTree into a formatted string."""
 
-    def _render_block(self, source):
-        _result = copy(source)
-        if type(_result) == list:
-            for i in range(len(_result)):
-                _result[i] = "".join(self._render_block(_result[i]))
-        if type(_result) == dict:
-            _result["content"] = self._render_block(_result["content"])
-            _result = self.reg[_result["type"]](_result)
-        return _result
+    def _render_nest(self, source):
+        if type(source) == list:
+            for i in range(len(source)):
+                source[i] = self._render_nest(source[i])
+        if type(source) == dict:
+            source["content"] = self._render_nest(source["content"])
+            source = self.reg[source["type"]](source)
+        return source
+
+    def _join_nest(self, source, cat1="", cat2=""):
+        if type(source) == list:
+            for i in range(len(source)):
+                source[i] = self._join_nest(source[i], cat1=cat2)
+            return cat1.join(source)
+        return source
 
     def run(self, tree):
         result = copy(tree.root["block"])
         for i in range(len(tree)):
-            result[i] = self._render_block(result[i])
+            result[i] = self._render_nest(result[i])
         return result
 
-    def para(self, _result):
+    def para(self, source):
         """Paragraph"""
-        return "\n".join(_result["content"])
+        return self._join_nest(source["content"], "\n", "")
 
-    def header(self, _result):
+    def header(self, source):
         """Header"""
-        return _result["content"][0]
+        return source["content"][0]
 
-    def code_block(self, _result):
+    def code_block(self, source):
         """Code block"""
-        return "\n".join(_result["content"][0])
+        return self._join_nest(source["content"][0], "\n", "")
 
-    def item_list(self, _result):
+    def item_list(self, source):
         """Item list"""
-        return "\n".join(_result["content"][0][0])
+        return self._join_nest(source["content"], "\n", "\n")
 
-    def quote(self, _result):
+    def quote(self, source):
         """Quote"""
-        return "\n".join(_result["content"][0])
+        return self._join_nest(source["content"][0], "\n", "")
 
-    def newpage(self, _result):
+    def newpage(self, source):
         """New page"""
         pass
 
-    def bold(self, _result):
+    def bold(self, source):
         """Bold text"""
-        return _result["content"][0]
+        return source["content"][0]
 
-    def image(self, _result):
+    def image(self, source):
         """Image link"""
-        return _result["content"][0]
+        return source["content"][0]
 
-    def link(self, _result):
+    def link(self, source):
         """Hyper link"""
-        return _result["content"][0]
+        return source["content"][0]
 
-    def ruby(self, _result):
+    def ruby(self, source):
         """Ruby text"""
-        return _result["content"][0]
+        return source["content"][0]
 
-    def tcy(self, _result):
+    def tcy(self, source):
         """Tate chu Yoko"""
-        return _result["content"][0]
+        return source["content"][0]

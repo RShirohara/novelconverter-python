@@ -16,7 +16,7 @@ def build_inlineparser():
 def build_blockparser():
     """Build the default block parsers."""
     parser = BlockParser()
-    # parser.reg.add(parser.newpage, "newline", 60)
+    # parser.reg.add(parser.newpage, "newpage", 60)
     # parser.reg.add(parser.header, "header", 50)
     # parser.reg.add(parser.code_block, "code_block", 40)
     # parser.reg.add(parser.item_list, "item_list", 30)
