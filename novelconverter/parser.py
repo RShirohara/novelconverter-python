@@ -128,7 +128,7 @@ class BlockParser(Processor):
         Returns:
             dict: {
                 "type": "item_list",
-                "content": ["1", "2", ["2-1", "2-2"]]
+                "content": [["content strings"], [level]]
             }
         """
         pass
@@ -139,7 +139,7 @@ class BlockParser(Processor):
         Returns:
             dict: {
                 "type": "quote",
-                "content": [["content strings"], level]
+                "content": [["content strings"], [level]]
             }
         """
         pass

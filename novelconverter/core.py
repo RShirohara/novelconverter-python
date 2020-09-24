@@ -23,7 +23,7 @@ class NovelConverter:
 
     def build_registry(self):
         """Build default registry."""
-        self.inlineparser = build_inlineparser()
+        self.tree.inlineparser = build_inlineparser()
         self.tree.blockparser = build_blockparser()
         self.renderer = build_renderer()
         self.preprocessor = build_preprocessor()
@@ -36,7 +36,6 @@ class NovelConverter:
             source (str): source strings
         """
         source = self.preprocessor.run(source)
-        _cache = self.inlineparser.run(source)
-        self.tree.parse(_cache)
+        self.tree.parse(source)
         result = "\n\n".join(self.renderer.run(self.tree))
         return self.postprocessor.run(result)

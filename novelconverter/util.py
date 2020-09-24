@@ -38,23 +38,32 @@ class ElementTree:
         Args:
             source (str): JSON-formatted string
         """
-        _cache = [s for s in source.split("\n\n") if s]
-        _skip = 0
-        for i in range(len(_cache)):
+        _cache = []
+        for i in [s for s in source.split("\n\n") if s]:
             if "meta" in self.blockparser.reg:
-                if _meta := self.blockparser.reg["meta"](_cache[i-_skip]):
-                    _skip += 1
+                _meta = self.blockparser.reg["meta"](i)
+                if _meta:
                     self.root["meta"] = _meta
+                    _cache.remove(i)
                     self.blockparser.reg.delete("meta")
+                    break
+            _cache.append(i)
+        for c in _cache:
+            _i = len(self.root["block"]) - 1
+            if "code_block" in self.blockparser.reg:
+                _match = self.blockparser.reg["code_block"](c)
+                if _match:
+                    self.root["block"].insert(_i, _match)
                     continue
-            for r in self.blockparser.reg:
-                _result = r(_cache[i])
+            self.inlineparser.run(c)
+            for rb in self.blockparser.reg:
+                if "type" in self.root["block"][_i]:
+                    break
+                _result = rb(c)
                 if not _result:
                     continue
-                if "type" in self.root["block"][i-_skip].keys():
-                    break
-                self.root["block"].insert(i-_skip, _result)
-        self.root["block"] = [r for r in self.root["block"][:] if r]
+                self.root["block"].insert(_i, _result)
+        self.root["block"] = [r for r in self.root["block"] if r]
 
 
 class Processor:
