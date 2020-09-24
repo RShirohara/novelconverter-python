@@ -3,9 +3,11 @@
 
 import setuptools
 
+from novelconverter import __version__ as version
+
 setuptools.setup(
     name="novelconverter",
-    version="4.0.0-pre_alpha",
+    version=version,
     author="Ray Shirohara",
     author_email="rshirohara@gmail.com",
     url="https://github.com/RShirohara/NovelConverter",
