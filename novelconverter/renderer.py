@@ -9,6 +9,7 @@ from . import util
 def build_renderer():
     """Build the default renderers."""
     renderer = Renderer()
+    renderer.reg.add(renderer.code_inline, "code_inline", 120)
     renderer.reg.add(renderer.bold, "bold", 110)
     renderer.reg.add(renderer.image, "image", 100)
     renderer.reg.add(renderer.link, "link", 90)
@@ -62,7 +63,7 @@ class Renderer(util.Processor):
 
     def item_list(self, source):
         """Item list"""
-        return self._join_nest(source["content"], "\n", "\n")
+        return self._join_nest(source["content"][0], "\n", "")
 
     def quote(self, source):
         """Quote"""
@@ -74,6 +75,10 @@ class Renderer(util.Processor):
 
     def bold(self, source):
         """Bold text"""
+        return source["content"][0]
+
+    def code_inline(self, source):
+        """Code block in line"""
         return source["content"][0]
 
     def image(self, source):

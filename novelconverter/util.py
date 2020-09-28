@@ -14,6 +14,8 @@ class ElementTree:
             "meta": {},
             "NovelConv-Version": version,
         }
+        self.blockparser = Processor()
+        self.inlineparser = Processor()
 
     def __contains__(self, item):
         return item in self.root["block"]
@@ -55,6 +57,7 @@ class ElementTree:
                 if _match:
                     self.root["block"].insert(_i, _match)
                     continue
+            self.blockparser.reg.delete("code_block")
             self.inlineparser.run(c)
             for rb in self.blockparser.reg:
                 if "type" in self.root["block"][_i]:

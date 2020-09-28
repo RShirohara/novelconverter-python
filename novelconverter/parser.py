@@ -39,9 +39,16 @@ class InlineParser(Processor):
         """Bold text
 
         Example:
-            {"type": "bold", "content": ["strings"]}
+            {"type": "bold", "content": ["text"]}
         """
         pass
+
+    def code_inline(self, source):
+        """Code block in line
+
+        Example:
+            {"type": "code_inline", "content", ["text"]}
+        """
 
     def image(self, source):
         """Image
@@ -55,7 +62,7 @@ class InlineParser(Processor):
         """Hyper link
 
         Example:
-            {"type": "link", "content": ["strings", "url"]}
+            {"type": "link", "content": ["text", "link"]}
         """
         pass
 
