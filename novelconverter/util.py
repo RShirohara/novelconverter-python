@@ -34,12 +34,18 @@ class ElementTree:
     def __repr__(self):
         return f"<{self.__class__.__name__}({list(self)})>"
 
+    def clear(self):
+        """Cleanup ElementTree"""
+        self.root["block"] = [{}]
+        self.root["meta"] = {}
+
     def parse(self, source):
         """Parse a JSON-formatted string into a Tree object
 
         Args:
             source (str): JSON-formatted string
         """
+        self.clear()
         _cache = []
         for i in [s for s in source.split("\n\n") if s]:
             if "meta" in self.blockparser.reg:
@@ -57,8 +63,8 @@ class ElementTree:
                 if _match:
                     self.root["block"].insert(_i, _match)
                     continue
-            self.blockparser.reg.delete("code_block")
-            self.inlineparser.run(c)
+                self.blockparser.reg.delete("code_block")
+            c = self.inlineparser.run(c)
             for rb in self.blockparser.reg:
                 if "type" in self.root["block"][_i]:
                     break
