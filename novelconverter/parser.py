@@ -2,8 +2,13 @@
 # author: @RShirohara
 
 import json
+import re
 
 from .util import Processor
+
+_PARA = re.compile(
+    r'\{"type": (?P<text>.*?)\}'
+)
 
 
 def build_inlineparser():
@@ -97,14 +102,15 @@ class BlockParser(Processor):
         """
         _in_list = []
         for i in source.splitlines():
-            if "{\"type\":" in i:
+            _match = _PARA.search(i)
+            if _match:
                 _in_list.append([
-                    i.translate(str.maketrans({"{": "\",{", "}": "},\""}))
+                    _PARA.sub(r'",{"type": \g<text>},"', i)
                 ])
             else:
                 _in_list.append(i)
-        _content = str(_in_list).replace("\'", "\"")
-        _new = "{" + f"\"type\": \"para\", \"content\": {_content}" + "}"
+        _content = str(_in_list).replace("\'", '"')
+        _new = "{" + f'"type": "para", "content": {_content}' + "}"
         return json.loads(_new)
 
     def header(self, source):
