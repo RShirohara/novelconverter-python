@@ -48,7 +48,7 @@ class Renderer(util.Processor):
         result = copy(tree.root["block"])
         for i in range(len(tree)):
             result[i] = self._render_nest(result[i])
-        return result
+        return [r for r in result if r]
 
     def para(self, source):
         """Paragraph"""
