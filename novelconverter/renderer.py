@@ -32,7 +32,8 @@ class Renderer(util.Processor):
             for i in range(len(source)):
                 source[i] = self._render_nest(source[i])
         if type(source) == dict:
-            source["content"] = self._render_nest(source["content"])
+            if "content" in source.keys():
+                source["content"] = self._render_nest(source["content"])
             source = self.reg[source["type"]](source)
         return source
 
