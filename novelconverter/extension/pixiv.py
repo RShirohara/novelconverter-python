@@ -121,7 +121,7 @@ class Renderer(renderer.Renderer):
         return f"[[rb:{source['content'][0]}>{source['content'][1]}]]"
 
     def header(self, source):
-        return f"[chapter:{source['content'][0]}"
+        return f"[chapter:{source['content'][0]}]"
 
     def newpage(self, source):
         return "[newpage]"
