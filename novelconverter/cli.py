@@ -3,53 +3,91 @@
 # author: RShirohara
 
 import argparse
+import inspect
 import sys
 
 import novelconverter
 
+_EXTENSION = (
+    "markdown",
+    "ddmarkdown",
+    "pixiv"
+)
+
 
 def get_args():
     _parser = argparse.ArgumentParser(
-        description=novelconverter.description,
-        formatter_class=argparse.RawDescriptionHelpFormatter)
+        description=novelconverter.__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     _parser.add_argument(
-        "to_format", type=str, help="Format of the output text")
+        "from_format", type=str, help="Format of the original text"
+    )
     _parser.add_argument(
-        "-f", "--from_format", type=str, help="Format of the original text",
-        default="ddmarkdown")
+        "to_format", type=str, help="Format of the output text"
+    )
     _parser.add_argument(
-        "-o", "--output", type=str, help="File path of the output text")
+        "-o", "--output", type=str, help="File path of the output text"
+    )
     _parser.add_argument(
-        "-i", "--input", type=str, help="File path of the original text")
+        "-i", "--input", type=str, help="File path of the original text"
+    )
     args = _parser.parse_args()
     return args
 
 
-def load_text(_path):
-    """Load the original text"""
-    if _path:
-        with open(_path, "r") as _file:
-            data = _file.read()
+def load_data(path):
+    if path:
+        with open(path, "r") as _f:
+            source = _f.read()
     else:
-        data = sys.stdin.read()
-    return data
+        source = sys.stdin.read()
+    return source
 
 
-def export_text(_data, _path):
-    """Export the converted text"""
-    if _path:
-        with open(_path, "w") as _file:
-            _file.write(_data)
+def export_data(source, path):
+    if path:
+        with open(path, "w") as _f:
+            _f.write(source)
     else:
-        sys.stdout.write(_data)
+        print(source)
+
+
+def load_extension(ext_name, proc_name):
+    # ext_nameが存在しているか確認
+    if ext_name not in _EXTENSION:
+        raise ValueError(f"No extension named {ext_name} exists.")
+    ext = eval(f"novelconverter.extension.{ext_name}")
+    _in_processor = [
+        x[0] for x in inspect.getmembers(ext, inspect.isfunction)
+    ]
+    processor = {
+        x.replace("build_", ""): eval(f"ext.{x}", {"ext": ext})
+        for x in _in_processor
+    }
+    # proc_nameが存在するかを確認
+    if proc_name not in processor.keys():
+        sys.stderr.write(f"No processor named {proc_name} exists.\n")
+        return novelconverter.util.Processor()
+    return processor[proc_name]()
+
+
+class NovelConverter(novelconverter.NovelConverter):
+    def build_registry(self, from_form, to_form):
+        self.tree.inlineparser = load_extension(from_form, "inlineparser")
+        self.tree.blockparser = load_extension(from_form, "blockparser")
+        self.renderer = load_extension(to_form, "renderer")
+        self.preprocessor = load_extension(from_form, "preprocessor")
+        self.postprocessor = load_extension(to_form, "postprocessor")
 
 
 def main():
     args = get_args()
-    original_text = load_text(args.input)
-    converted_text = novelconverter.convert(
-        original_text, args.from_format, args.to_format)
-    export_text(converted_text, args.output)
+    nv = NovelConverter()
+    nv.build_registry(args.from_format, args.to_format)
+    source = load_data(args.input)
+    result = nv.convert(source)
+    export_data(result, args.output)
 
 
 if __name__ == "__main__":

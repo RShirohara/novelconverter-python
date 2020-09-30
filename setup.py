@@ -3,17 +3,17 @@
 
 import setuptools
 
+from novelconverter import __version__ as version
+
 setuptools.setup(
     name="novelconverter",
-    version="3.0.2",
+    version=version,
     author="Ray Shirohara",
-    author_email="rshirohara@gmail.com",
+    author_email="RShirohara@gmail.com",
     url="https://github.com/RShirohara/NovelConverter",
-    description="Convert novel on python",
+    description="Convert syntax for multiple Web-Novel sites.",
     license="MIT License",
     packages=setuptools.find_packages(),
-    install_requires=[
-    ],
     entry_points={
         "console_scripts": [
             "novelconv = novelconverter.cli:main",
