@@ -9,9 +9,9 @@ setuptools.setup(
     name="novelconverter",
     version=version,
     author="Ray Shirohara",
-    author_email="rshirohara@gmail.com",
+    author_email="RShirohara@gmail.com",
     url="https://github.com/RShirohara/NovelConverter",
-    description="Convert novel on python",
+    description="Convert syntax for multiple Web-Novel sites.",
     license="MIT License",
     packages=setuptools.find_packages(),
     entry_points={
