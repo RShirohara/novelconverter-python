@@ -8,14 +8,13 @@ from .__meta__ import __version__ as version
 
 
 class ElementTree:
-    def __init__(self):
+    def __init__(self, novelconv):
+        self.nv = novelconv
         self.root = {
             "block": [{}],
             "meta": {},
             "NovelConv-Version": version,
         }
-        self.blockparser = Processor()
-        self.inlineparser = Processor()
 
     def __contains__(self, item):
         return item in self.root["block"]
@@ -48,24 +47,24 @@ class ElementTree:
         self.clear()
         _cache = []
         for i in [s for s in source.split("\n\n") if s]:
-            if "meta" in self.blockparser.reg:
-                _meta = self.blockparser.reg["meta"](i)
+            if "meta" in self.nv.blockparser.reg:
+                _meta = self.nv.blockparser.reg["meta"](i)
                 if _meta:
                     self.root["meta"] = _meta
                     _cache.remove(i)
-                    self.blockparser.reg.delete("meta")
+                    self.nv.blockparser.reg.delete("meta")
                     break
             _cache.append(i)
         for c in _cache:
             _i = len(self.root["block"]) - 1
-            if "code_block" in self.blockparser.reg:
-                _match = self.blockparser.reg["code_block"](c)
+            if "code_block" in self.nv.blockparser.reg:
+                _match = self.nv.blockparser.reg["code_block"](c)
                 if _match:
                     self.root["block"].insert(_i, _match)
                     continue
-                self.blockparser.reg.delete("code_block")
-            c = self.inlineparser.run(c)
-            for rb in self.blockparser.reg:
+                self.nv.blockparser.reg.delete("code_block")
+            c = self.nv.inlineparser.run(c)
+            for rb in self.nv.blockparser.reg:
                 if "type" in self.root["block"][_i]:
                     break
                 _result = rb(c)
