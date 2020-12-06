@@ -33,6 +33,10 @@ class ElementTree:
     def __repr__(self):
         return f"<{self.__class__.__name__}({list(self)})>"
 
+    def _get_meta(self, source):
+        # TODO: #4
+        pass
+
     def clear(self):
         """Cleanup ElementTree"""
         self.root["block"] = [{}]

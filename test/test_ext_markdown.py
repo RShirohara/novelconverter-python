@@ -37,11 +37,11 @@ class TestInlineParser(unittest.TestCase):
     def test_link(self):
         self.assertEqual(
             '{"type": "link", "content": ["test.", "http://example.com"]}',
-            self.parser.reg["link"]("![test.](http://example.com)")
+            self.parser.reg["link"]("[test.](http://example.com)")
         )
         self.assertEqual(
             '{"type": "link", "content": ["example.com", "example.com"]}',
-            self.parser.reg["link"]("![](example.com)")
+            self.parser.reg["link"]("[](example.com)")
         )
 
 

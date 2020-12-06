@@ -6,7 +6,7 @@ import re
 
 from novelconverter import parser, renderer
 
-_IMAGE = re.compile(r"!\[pixivimage:(?P<link>.*?)")
+_IMAGE = re.compile(r"\[pixivimage:(?P<link>.*?)\]")
 _LINK = re.compile(r"\[jumpurl:(?P<text>.*?)>(?P<link>.*?)\]")
 _RUBY = re.compile(r"\[\[rb:(?P<text>.*?)>(?P<ruby>.*?)\]\]")
 _HEADER = re.compile(r"\[chapter:(?P<name>.*?)\]")
@@ -71,7 +71,7 @@ class InlineParser(parser.InlineParser):
             _dict = _match.groupdict()
             _old = _match.group(0)
             _new = "{\"type\": \"link\", " + \
-                f"content\": [\"{_dict['text']}\", \"{_dict['link']}\"]" + \
+                f"\"content\": [\"{_dict['text']}\", \"{_dict['link']}\"]" + \
                 "}"
             source = source.replace(_old, _new)
         return source
