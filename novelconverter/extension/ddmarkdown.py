@@ -100,3 +100,6 @@ class Renderer(markdown.Renderer):
         text = source["content"][0]
         ruby = source["content"][1]
         return "{" + f"{text}|{ruby}" + "}"
+
+    def tcy(self, source):
+        return f'^{source["content"][0]}^'

@@ -19,12 +19,12 @@ class NovelConverter:
     """
 
     def __init__(self):
-        self.tree = ElementTree()
+        self.tree = ElementTree(self)
 
     def build_registry(self):
         """Build default registry."""
-        self.tree.inlineparser = build_inlineparser()
-        self.tree.blockparser = build_blockparser()
+        self.inlineparser = build_inlineparser()
+        self.blockparser = build_blockparser()
         self.renderer = build_renderer()
         self.preprocessor = build_preprocessor()
         self.postprocessor = build_postprocessor()

@@ -42,12 +42,10 @@ def build_blockparser():
 
 def build_renderer():
     renderer = Renderer()
-    renderer.reg.add(renderer.bold, "bold", 110)
-    renderer.reg.add(renderer.image, "image", 100)
-    renderer.reg.add(renderer.link, "link", 90)
-    renderer.reg.add(renderer.ruby, "ruby", 80)
-    renderer.reg.add(renderer.tcy, "tcy", 70)
-    renderer.reg.add(renderer.newpage, "newpage", 60)
+    renderer.reg.add(renderer.bold, "bold", 90)
+    renderer.reg.add(renderer.code_inline, "code_inline", 80)
+    renderer.reg.add(renderer.image, "image", 70)
+    renderer.reg.add(renderer.link, "link", 60)
     renderer.reg.add(renderer.header, "header", 50)
     renderer.reg.add(renderer.code_block, "code_block", 40)
     renderer.reg.add(renderer.item_list, "item_list", 30)
@@ -93,7 +91,7 @@ class InlineParser(parser.InlineParser):
             _pos = _match.end(0)
             _dict = _match.groupdict()
             _old = _match.group(0)
-            _new = '{"type: "code_inline", ' + \
+            _new = '{"type": "code_inline", ' + \
                 f'"content": ["{_dict["text"]}"]' + \
                 "}"
             source = source.replace(_old, _new)
@@ -124,7 +122,7 @@ class InlineParser(parser.InlineParser):
             _pos = _match.end(0)
             _dict = _match.groupdict()
             _old = _match.group(0)
-            _new = '{"type": "image", "content": [' + \
+            _new = '{"type": "link", "content": [' + \
                 f'"{_dict["text"] if _dict["text"] else _dict["link"]}"' + \
                 f', "{_dict["link"]}"]' + \
                 "}"
@@ -203,7 +201,7 @@ class Renderer(renderer.Renderer):
     def code_block(self, source):
         result = self._join_nest(source["content"][0], "\n", "")
         lang = source["content"][1]
-        return f"```{lang}\n{result}```"
+        return f"```{lang}\n{result}\n```"
 
     def item_list(self, source):
         result = [
