@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # author: @RShirohara
-"""parser test module.
+"""novelconverter.parser test module.
 
-This module is test of parser.
+This module is test of novelconverter.parser.
 This test will be run using pytest.
 """
 

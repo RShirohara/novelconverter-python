@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 # author: @RShirohara
-# -*- coding: utf-8 -*-
-# author: @RShirohara
-"""util test module.
+"""novelconverter.util test module.
 
-This module is test of util.
+This module is test of novelconverter.util.
 This test will be run using pytest.
 """
 

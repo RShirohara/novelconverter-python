@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # author: @RShirohara
-"""renderer test module.
+"""novelconverter.renderer test module.
 
-This module is test of renderer.
+This module is test of novelconverter.renderer.
 This test will be run using pytest.
 """
 

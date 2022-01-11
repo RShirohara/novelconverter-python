@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # author: @RShirohara
-"""lexer test module.
+"""novelconverter.lexer test module.
 
-This module is test of lexer.
+This module is test of novelconverter.lexer.
 This test will be run using pytest.
 """
 

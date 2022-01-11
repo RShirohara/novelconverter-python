@@ -1,9 +1,8 @@
-
 # -*- coding: utf-8 -*-
 # author: @RShirohara
-"""processor test module.
+"""novelconverter.processor test module.
 
-This module is test of processor.
+This module is test of novelconverter.processor.
 This test will be run using pytest.
 """
 
