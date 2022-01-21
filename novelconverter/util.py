@@ -1,194 +1,113 @@
 # -*- coding: utf-8 -*-
 # author: @RShirohara
+"""NovelConverter Utility module.
 
+Attributes:
+    Registry: A list sorted by priority.
+"""
 
-from collections import namedtuple
-
-from .__meta__ import __version__ as version
-
-
-class ElementTree:
-    def __init__(self, novelconv):
-        self.nv = novelconv
-        self.root = {
-            "block": [{}],
-            "meta": {},
-            "NovelConv-Version": version,
-        }
-
-    def __contains__(self, item):
-        return item in self.root["block"]
-
-    def __getitem__(self, key):
-        if isinstance(key, slice):
-            return self.root["block"][key.start:key.stop]
-        return self.root["block"][key]
-
-    def __iter__(self):
-        return iter(self.root["block"])
-
-    def __len__(self):
-        return len(self.root["block"])
-
-    def __repr__(self):
-        return f"<{self.__class__.__name__}({list(self)})>"
-
-    def _get_meta(self, source):
-        # TODO: #4
-        pass
-
-    def clear(self):
-        """Cleanup ElementTree"""
-        self.root["block"] = [{}]
-        self.root["meta"] = {}
-
-    def parse(self, source):
-        """Parse a JSON-formatted string into a Tree object
-
-        Args:
-            source (str): JSON-formatted string
-        """
-        self.clear()
-        _cache = []
-        for i in [s for s in source.split("\n\n") if s]:
-            if "meta" in self.nv.blockparser.reg:
-                _meta = self.nv.blockparser.reg["meta"](i)
-                if _meta:
-                    self.root["meta"] = _meta
-                    _cache.remove(i)
-                    self.nv.blockparser.reg.delete("meta")
-                    break
-            _cache.append(i)
-        for c in _cache:
-            _i = len(self.root["block"]) - 1
-            if "code_block" in self.nv.blockparser.reg:
-                _match = self.nv.blockparser.reg["code_block"](c)
-                if _match:
-                    self.root["block"].insert(_i, _match)
-                    continue
-                self.nv.blockparser.reg.delete("code_block")
-            c = self.nv.inlineparser.run(c)
-            for rb in self.nv.blockparser.reg:
-                if "type" in self.root["block"][_i]:
-                    break
-                _result = rb(c)
-                if not _result:
-                    continue
-                self.root["block"].insert(_i, _result)
-        self.root["block"] = [r for r in self.root["block"] if r]
-
-
-class Processor:
-    def __init__(self):
-        self.reg = Registry()
-
-    def run(self, source):
-        for r in self.reg:
-            source = r(source)
-        return source
-
-
-# "Registry"内で使用される名前付きタプルの定義
-_PriorityItem = namedtuple("PriorityItem", ["name", "priority"])
+from typing import Iterator, overload
 
 
 class Registry:
-    """A priority sorted by registry.
+    """A list sorted by priority.
 
-    Use "add to add items and "delete" to remove items.
-    A "Registry" instance it like a list when reading data.
-
-    Examples:
-        reg = Registry()
-        reg.add(hoge(), "Hoge", 20)
-        # by index
-        item = reg[0]
-        # by name
-        item = reg["Hoge"]
+    Registry is a list-like data structure.
+    Registry is sorted of priority (ascending order).
     """
 
-    def __init__(self):
-        self._data = {}
-        self._priority = []
-        self._is_sorted = False
+    def __init__(self) -> None:
+        self.__data: dict[str, any] = {}
+        self.__priority: dict[str, int] = {}
+        self.__key_cache: list[str] = []
+        self.__is_sorted: bool = False
 
-    def __contains__(self, item):
-        if isinstance(item, str):
-            # 同名のアイテムが存在するかを確認
-            return item in self._data.keys()
-        return item in self._data.values()
+    def __contains__(self, item: any) -> bool:
+        self.__sort()
+        match item:
+            case str():
+                res: bool = item in self.__priority.keys()
+                if not res:
+                    res = item in self.__data.values()
+                return res
+            case _:
+                return item in self.__data.values()
 
-    def __iter__(self):
-        self._sort()
-        return iter([self._data[k] for k, v in self._priority])
+    def __delitem__(self, key: int | str) -> None:
+        self.__sort()
+        target: str
+        match key:
+            case int():
+                target = self.__key_cache[key]
+            case str():
+                target = key
+            case _:
+                raise TypeError(
+                    "registry indices on delete must be integers or strings"
+                )
+        if target not in self.__priority.keys():
+            raise KeyError(target)
+        self.__is_sorted = False
+        del self.__priority[target]
+        del self.__data[target]
 
-    def __getitem__(self, key):
-        self._sort()
-        if isinstance(key, slice):
-            # スライスで指定した場合
-            reg = Registry()
-            for k, v in self._priority[key]:
-                reg.add(self._data[k], k, v)
-            return reg
-        if isinstance(key, int):
-            # インデックスで指定した場合
-            return self._data[self._priority[key].name]
-        # 文字列で指定した場合
-        return self._data[key]
+    @overload
+    def __getitem__(self, key: int) -> any:
+        pass
 
-    def __len__(self):
-        return len(self._priority)
+    @overload
+    def __getitem__(self, key: str) -> any:
+        pass
 
-    def __repr__(self):
-        return f"<{self.__class__.__name__}({list(self)})>"
+    @overload
+    def __getitem__(self, key: slice) -> "Registry[any]":
+        pass
 
-    def _sort(self):
-        """Sort the registry by priority."""
-        if not self._is_sorted:
-            self._priority.sort(key=lambda item: item.priority, reverse=True)
-            self._is_sorted = True
+    def __getitem__(self, key: int | str | slice) -> any:
+        self.__sort()
+        match key:
+            case int():
+                return self.__data[self.__key_cache[key]]
+            case str():
+                if key not in self.__priority.keys():
+                    raise KeyError(key)
+                return self.__data[key]
+            case slice():
+                reg = Registry()
+                for k in self.__key_cache[key]:
+                    reg.add(k, self.__priority[k], self.__data[k])
+                return reg
+            case _:
+                raise TypeError(
+                    "registry indices must be integers, strings or slices"
+                )
 
-    def get_index(self, name):
-        """Return the index of the given name
+    def __iter__(self) -> Iterator[any]:
+        self.__sort()
+        return iter(self.__data[key] for key in self.__key_cache)
 
-        Args:
-            name (str): index name
-        """
-        if name in self:
-            self._sort()
-            return self._priority.index(
-                [x for x in self._priority if x.name is name][0]
+    def __len__(self) -> int:
+        return len(self.__priority)
+
+    def __sort(self) -> None:
+        if not self.__is_sorted:
+            sorted_priority: list[tuple[str, int]] = sorted(
+                self.__priority.items(), key=lambda x: x[1]
             )
-        raise ValueError(f"No item named {name} exists.")
+            self.__key_cache = [key for key, _ in sorted_priority]
+            self.__is_sorted = True
 
-    def add(self, item, name, priority):
+    def add(self, key: str, priority: int, item: any) -> None:
         """Add an item to the registry with the given name and priority.
 
-        If an item is registered with a "name" which already exists, the
-        existing item is replaced with the new item.
-
         Args:
-            item (function): item
-            name (str): item name
-            priority (int): priority
+            key (str): key of item.
+            priority (int): priority of item.
+            item (any): item.
         """
-        if name in self:
-            # 同名のアイテムがある場合削除
-            self.delete(name)
-        self._is_sorted = False
-        self._data[name] = item
-        self._priority.append(_PriorityItem(name, priority))
 
-    def delete(self, name, strict=True):
-        """Delete an item to the registry with the given name.
-
-        Args:
-            name (str): item name
-        """
-        try:
-            index = self.get_index(name)
-            del self._priority[index]
-            del self._data[name]
-        except ValueError:
-            if strict:
-                raise
+        if key in self.__priority:
+            self.__delitem__(key)
+        self.__is_sorted = False
+        self.__data[key] = item
+        self.__priority[key] = priority
