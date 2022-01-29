@@ -35,9 +35,9 @@ class Registry:
 
     def __delitem__(self, key: int | str) -> None:
         self.__sort()
-        target: str
+        target: str = ""
         match key:
-            case int():
+            case int() if type(key) != bool:
                 target = self.__key_cache[key]
             case str():
                 target = key
@@ -66,7 +66,7 @@ class Registry:
     def __getitem__(self, key: int | str | slice) -> any:
         self.__sort()
         match key:
-            case int():
+            case int() if type(key) != bool:
                 return self.__data[self.__key_cache[key]]
             case str():
                 if key not in self.__priority.keys():

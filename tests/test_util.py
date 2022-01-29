@@ -54,7 +54,7 @@ class TestRegistry:
             del registry["hoge"]
 
         # if try to delete item by value, it will fail.
-        with raises(KeyError):
+        with raises(TypeError):
             del registry[True]
 
         # if try to delete item by index out of range, it will fail.
