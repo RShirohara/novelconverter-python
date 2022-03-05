@@ -7,14 +7,14 @@ This test will be run using pytest.
 """
 
 
-from novelconverter.util import Registry
+from novelconverter.util import Registry, RegistryItem
 from pytest import fixture, raises
 
 
-datas: tuple[tuple[str, int, any]] = (
-    ("foo", 10, "Test string."),
-    ("bar", 30, 123),
-    ("baz", 20, True),
+datas: tuple[RegistryItem] = (
+    RegistryItem("foo", 10, "Test string."),
+    RegistryItem("bar", 30, 123),
+    RegistryItem("baz", 20, True),
 )
 
 
@@ -28,19 +28,19 @@ def registry() -> Registry:
 class TestRegistry:
     def test_getitem(self, registry: Registry) -> None:
         # if access using an existing key, return values.
-        assert datas[0][1:] == registry["foo"]
-        assert datas[1][1:] == registry["bar"]
-        assert datas[2][1:] == registry["baz"]
+        assert RegistryItem("foo", 10, "Test string.") == registry["foo"]
+        assert RegistryItem("bar", 30, 123) == registry["bar"]
+        assert RegistryItem("baz", 20, True) == registry["baz"]
 
         # if access using an index in range, return values.
-        assert datas[0] == registry[0]
-        assert datas[2] == registry[1]
-        assert datas[1] == registry[2]
+        assert RegistryItem("foo", 10, "Test string.") == registry[0]
+        assert RegistryItem("baz", 20, True) == registry[1]
+        assert RegistryItem("bar", 30, 123) == registry[2]
 
         # if access using an slice, return registry.
-        assert datas[0] == registry[0:2][0]
-        assert datas[2] == registry[0:2][1]
-        assert datas[1] == registry[0:3:2][1]
+        assert RegistryItem("foo", 10, "Test string.") == registry[0:2][0]
+        assert RegistryItem("baz", 20, True) == registry[0:2][1]
+        assert RegistryItem("bar", 30, 123) == registry[0:3:2][1]
 
         # if access using an non-existing key, raise KeyError.
         with raises(KeyError):
@@ -100,22 +100,37 @@ class TestRegistry:
         assert False not in registry
 
     def test_add(self, registry: Registry) -> None:
-        add_data: tuple[tuple[str, int, any]] = (
-            ("hoge", 15, [1, 2, 3]),
-            ("bar", 40, ("Test", 123)),
+        add_data: tuple[RegistryItem] = (
+            RegistryItem("hoge", 15, [1, 2, 3]),
+            RegistryItem("bar", 40, ("Test", 123)),
         )
 
-        registry.add(add_data[0][0], add_data[0][1], add_data[0][2])
-        assert add_data[0][0] in registry
-        assert add_data[0][2] in registry
-        assert add_data[0][1:] == registry["hoge"]
-        assert add_data[0] == registry[1]
+        registry.add(add_data[0].key, add_data[0].priority, add_data[0].item)
+        assert "hoge" in registry
+        assert [1, 2, 3] in registry
+        assert RegistryItem("hoge", 15, [1, 2, 3]) == registry["hoge"]
+        assert RegistryItem("hoge", 15, [1, 2, 3]) == registry[1]
 
-        registry.add(add_data[1][0], add_data[1][1], add_data[1][2])
-        assert add_data[1][0] in registry
-        assert add_data[1][2] in registry
-        assert add_data[1][1:] == registry["bar"]
-        assert add_data[1] == registry[3]
+        registry.add(add_data[1].key, add_data[1].priority, add_data[1].item)
+        assert "bar" in registry
+        assert ("Test", 123) in registry
+        assert RegistryItem("bar", 40, ("Test", 123)) == registry["bar"]
+        assert RegistryItem("bar", 40, ("Test", 123)) == registry[3]
 
     def test_add_items(self, registry: Registry) -> None:
-        pass
+        add_data: tuple[RegistryItem] = (
+            RegistryItem("hoge", 15, [1, 2, 3]),
+            RegistryItem("bar", 40, ("Test", 123)),
+        )
+
+        registry.add_items(add_data)
+
+        assert "hoge" in registry
+        assert [1, 2, 3] in registry
+        assert RegistryItem("hoge", 15, [1, 2, 3]) == registry["hoge"]
+        assert RegistryItem("hoge", 15, [1, 2, 3]) == registry[1]
+
+        assert "bar" in registry
+        assert ("Test", 123) in registry
+        assert RegistryItem("bar", 40, ("Test", 123)) == registry["bar"]
+        assert RegistryItem("bar", 40, ("Test", 123)) == registry[3]

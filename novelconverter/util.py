@@ -8,7 +8,21 @@ Attributes:
 """
 
 from dataclasses import dataclass, field
-from typing import Container, Iterable, Iterator, overload
+from typing import Container, Iterable, Iterator, NamedTuple, overload
+
+
+class RegistryItem(NamedTuple):
+    """A tuple to store registry item information.
+
+    Attributes:
+        key (str): Key used to reference item.
+        priority (int): Priority used for sort in registry.
+        item (any): Item added to registry.
+    """
+
+    key: str
+    priority: int
+    item: any
 
 
 @dataclass(repr=False)
@@ -37,11 +51,11 @@ class Registry(Container):
         return len(self.__priority)
 
     @overload
-    def __getitem__(self, key: int) -> tuple[str, int, any]:
+    def __getitem__(self, key: int) -> RegistryItem:
         pass
 
     @overload
-    def __getitem__(self, key: str) -> tuple[int, any]:
+    def __getitem__(self, key: str) -> RegistryItem:
         pass
 
     @overload
@@ -53,14 +67,16 @@ class Registry(Container):
         match key:
             case int() if type(key) != bool:
                 k: str = self.__key_cache[key]
-                return (k, self.__priority[k], self.__data[k])
+                return RegistryItem(k, self.__priority[k], self.__data[k])
             case str():
                 if key not in self.__priority.keys():
                     raise KeyError(key)
-                return (self.__priority[key], self.__data[key])
+                return RegistryItem(
+                    key, self.__priority[key], self.__data[key]
+                )
             case slice():
                 items: tuple[tuple[str, int, any]] = tuple(
-                    (k, self.__priority[k], self.__data[k])
+                    RegistryItem(k, self.__priority[k], self.__data[k])
                     for k in self.__key_cache[key]
                 )
                 reg: Container[any] = Registry()
