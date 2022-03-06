@@ -7,11 +7,12 @@ This test will be run using pytest.
 """
 
 
+from typing import Any, Container
 from novelconverter.util import Registry, RegistryItem
 from pytest import fixture, raises
 
 
-datas: tuple[RegistryItem] = (
+datas: tuple[RegistryItem, RegistryItem, RegistryItem] = (
     RegistryItem("foo", 10, "Test string."),
     RegistryItem("bar", 30, 123),
     RegistryItem("baz", 20, True),
@@ -19,8 +20,8 @@ datas: tuple[RegistryItem] = (
 
 
 @fixture
-def registry() -> Registry:
-    reg: Registry[any] = Registry()
+def registry():
+    reg: Registry[Any] = Registry()
     reg.add_items(datas)
     yield reg
 
@@ -28,19 +29,19 @@ def registry() -> Registry:
 class TestRegistry:
     def test_getitem(self, registry: Registry) -> None:
         # if access using an existing key, return values.
-        assert RegistryItem("foo", 10, "Test string.") == registry["foo"]
-        assert RegistryItem("bar", 30, 123) == registry["bar"]
-        assert RegistryItem("baz", 20, True) == registry["baz"]
+        assert "Test string." == registry["foo"]
+        assert 123 == registry["bar"]
+        assert True is registry["baz"]
 
         # if access using an index in range, return values.
-        assert RegistryItem("foo", 10, "Test string.") == registry[0]
-        assert RegistryItem("baz", 20, True) == registry[1]
-        assert RegistryItem("bar", 30, 123) == registry[2]
+        assert "Test string." == registry[0]
+        assert True is registry[1]
+        assert 123 == registry[2]
 
         # if access using an slice, return registry.
-        assert RegistryItem("foo", 10, "Test string.") == registry[0:2][0]
-        assert RegistryItem("baz", 20, True) == registry[0:2][1]
-        assert RegistryItem("bar", 30, 123) == registry[0:3:2][1]
+        assert "Test string." == registry[0:2][0]
+        assert True is registry[0:2][1]
+        assert 123 == registry[0:3:2][1]
 
         # if access using an non-existing key, raise KeyError.
         with raises(KeyError):
@@ -100,7 +101,7 @@ class TestRegistry:
         assert False not in registry
 
     def test_add(self, registry: Registry) -> None:
-        add_data: tuple[RegistryItem] = (
+        add_data: Container[RegistryItem] = (
             RegistryItem("hoge", 15, [1, 2, 3]),
             RegistryItem("bar", 40, ("Test", 123)),
         )
@@ -108,17 +109,17 @@ class TestRegistry:
         registry.add(add_data[0].key, add_data[0].priority, add_data[0].item)
         assert "hoge" in registry
         assert [1, 2, 3] in registry
-        assert RegistryItem("hoge", 15, [1, 2, 3]) == registry["hoge"]
-        assert RegistryItem("hoge", 15, [1, 2, 3]) == registry[1]
+        assert [1, 2, 3] == registry["hoge"]
+        assert [1, 2, 3] == registry[1]
 
         registry.add(add_data[1].key, add_data[1].priority, add_data[1].item)
         assert "bar" in registry
         assert ("Test", 123) in registry
-        assert RegistryItem("bar", 40, ("Test", 123)) == registry["bar"]
-        assert RegistryItem("bar", 40, ("Test", 123)) == registry[3]
+        assert ("Test", 123) == registry["bar"]
+        assert ("Test", 123) == registry[3]
 
     def test_add_items(self, registry: Registry) -> None:
-        add_data: tuple[RegistryItem] = (
+        add_data: tuple[RegistryItem, RegistryItem] = (
             RegistryItem("hoge", 15, [1, 2, 3]),
             RegistryItem("bar", 40, ("Test", 123)),
         )
@@ -127,10 +128,10 @@ class TestRegistry:
 
         assert "hoge" in registry
         assert [1, 2, 3] in registry
-        assert RegistryItem("hoge", 15, [1, 2, 3]) == registry["hoge"]
-        assert RegistryItem("hoge", 15, [1, 2, 3]) == registry[1]
+        assert [1, 2, 3] == registry["hoge"]
+        assert [1, 2, 3] == registry[1]
 
         assert "bar" in registry
         assert ("Test", 123) in registry
-        assert RegistryItem("bar", 40, ("Test", 123)) == registry["bar"]
-        assert RegistryItem("bar", 40, ("Test", 123)) == registry[3]
+        assert ("Test", 123) == registry["bar"]
+        assert ("Test", 123) == registry[3]
