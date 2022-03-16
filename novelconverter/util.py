@@ -20,7 +20,7 @@ from typing import (
 )
 
 
-T = TypeVar("T")
+Unknown = TypeVar("Unknown")
 
 
 class RegistryItem(NamedTuple):
@@ -38,14 +38,16 @@ class RegistryItem(NamedTuple):
 
 
 @dataclass(repr=False)
-class Registry(Container[T]):
+class Registry(Container[Unknown]):
     """A registry sorted by priority.
 
     Registry is a list-like data structure.
     Registry item is sorted of prioritry (ascending order).
     """
 
-    __data: dict[str, T] = field(default_factory=dict[str, T], init=False)
+    __data: dict[str, Unknown] = field(
+        default_factory=dict[str, Unknown], init=False
+    )
     __priority: dict[str, int] = field(
         default_factory=dict[str, int], init=False
     )
@@ -63,15 +65,15 @@ class Registry(Container[T]):
         return len(self.__priority)
 
     @overload
-    def __getitem__(self, key: int) -> T:
+    def __getitem__(self, key: int) -> Unknown:
         pass
 
     @overload
-    def __getitem__(self, key: str) -> T:
+    def __getitem__(self, key: str) -> Unknown:
         pass
 
     @overload
-    def __getitem__(self, key: slice) -> "Registry[T]":
+    def __getitem__(self, key: slice) -> "Registry[Unknown]":
         pass
 
     def __getitem__(self, key: int | str | slice) -> Any:
@@ -88,7 +90,7 @@ class Registry(Container[T]):
                     RegistryItem(k, self.__priority[k], self.__data[k])
                     for k in self.__key_cache[key]
                 )
-                reg: Container[T] = Registry()
+                reg: Container[Unknown] = Registry()
                 reg.add_items(items)
                 return reg
             case _:
@@ -116,14 +118,14 @@ class Registry(Container[T]):
         del self.__priority[target]
         del self.__data[target]
 
-    def __iter__(self) -> Iterator[tuple[str, int, T]]:
+    def __iter__(self) -> Iterator[tuple[str, int, Unknown]]:
         self.__sort()
         return iter(
             RegistryItem(key, self.__priority[key], self.__data[key])
             for key in self.__key_cache
         )
 
-    def __contains__(self, item: T) -> bool:
+    def __contains__(self, item: Unknown) -> bool:
         self.__sort()
         match item:
             case str():
@@ -150,11 +152,11 @@ class Registry(Container[T]):
         self.__sort()
         return deepcopy(self.__priority)
 
-    def values(self) -> tuple[T]:
+    def values(self) -> tuple[Unknown]:
         self.__sort()
         return tuple(self.__data[key] for key in self.__key_cache)
 
-    def add(self, key: str, priority: int, item: T) -> None:
+    def add(self, key: str, priority: int, item: Unknown) -> None:
         """Add an item to the registry.
 
         Args:
@@ -171,7 +173,7 @@ class Registry(Container[T]):
         self.__data[key] = item
         self.__priority[key] = priority
 
-    def add_items(self, items: Iterable[tuple[str, int, T]]) -> None:
+    def add_items(self, items: Iterable[tuple[str, int, Unknown]]) -> None:
         """Add items to the registry all at once.
 
         Args:
@@ -180,3 +182,22 @@ class Registry(Container[T]):
 
         for key, priority, item in items:
             self.add(key, priority, item)
+
+    def pop(self, key: str) -> Unknown:
+        """Remove specified key and return the corresponding value.
+
+        Args:
+            key (str): Key used to reference item.
+
+        Raises:
+            KeyError: If the key is not found, raise a KeyError.
+
+        Returns:
+            Unknown: Item corresponded to key.
+        """
+
+        if key not in self.__priority.keys():
+            raise KeyError(key)
+        item: Unknown = self.__getitem__(key)
+        self.__delitem__(key)
+        return item

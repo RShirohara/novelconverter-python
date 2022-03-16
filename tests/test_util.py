@@ -7,12 +7,12 @@ This test will be run using pytest.
 """
 
 
-from typing import Any, Container
+from typing import Any
+
 from novelconverter.util import Registry, RegistryItem
 from pytest import fixture, raises
 
-
-datas: tuple[RegistryItem, RegistryItem, RegistryItem] = (
+datas: tuple[RegistryItem, ...] = (
     RegistryItem("foo", 10, "Test string."),
     RegistryItem("bar", 30, 123),
     RegistryItem("baz", 20, True),
@@ -101,7 +101,7 @@ class TestRegistry:
         assert False not in registry
 
     def test_add(self, registry: Registry) -> None:
-        add_data: Container[RegistryItem] = (
+        add_data: tuple[RegistryItem, ...] = (
             RegistryItem("hoge", 15, [1, 2, 3]),
             RegistryItem("bar", 40, ("Test", 123)),
         )
@@ -119,7 +119,7 @@ class TestRegistry:
         assert ("Test", 123) == registry[3]
 
     def test_add_items(self, registry: Registry) -> None:
-        add_data: tuple[RegistryItem, RegistryItem] = (
+        add_data: tuple[RegistryItem, ...] = (
             RegistryItem("hoge", 15, [1, 2, 3]),
             RegistryItem("bar", 40, ("Test", 123)),
         )
@@ -135,3 +135,15 @@ class TestRegistry:
         assert ("Test", 123) in registry
         assert ("Test", 123) == registry["bar"]
         assert ("Test", 123) == registry[3]
+
+    def test_pop(self, registry: Registry) -> None:
+        result: tuple[RegistryItem, ...] = (
+            RegistryItem("foo", 10, "Test string."),
+            RegistryItem("bar", 30, 123),
+        )
+
+        assert True is registry.pop("baz")
+        assert result == tuple(r for r in registry)
+
+        with raises(KeyError):
+            registry.pop("bazFix")
