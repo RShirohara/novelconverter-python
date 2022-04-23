@@ -27,34 +27,11 @@ def registry() -> Generator[Registry[Any], None, None]:
         Registry[Any]: Test data.
     """
 
-    reg: Registry[Any] = Registry()
-    reg.add_items(datas)
-    yield reg
+    yield Registry(datas)
 
 
 class TestRegistry:
     """Test class of Registry."""
-
-    def test_additem(self, registry: Registry):
-        """Test Registry.__additem__
-
-        Args:
-            registry (Registry): Test data.
-        """
-
-        # if add item by non-exist key, it will success.
-        registry.add("hoge", 15, [1, 2, 3])
-        assert "hoge" in registry
-        assert [1, 2, 3] in registry
-        assert [1, 2, 3] == registry["hoge"]
-        assert [1, 2, 3] == registry[1]
-
-        # if add item by exist key, Overwrite to value.
-        registry.add("bar", 40, ("Test", 123))
-        assert "bar" in registry
-        assert ("Test", 123) in registry
-        assert ("Test", 123) == registry["bar"]
-        assert ("Test", 123) == registry[3]
 
     def test_contains(self, registry: Registry) -> None:
         """Test Registry.__contains__.
@@ -169,11 +146,44 @@ class TestRegistry:
 
         assert (
             "Registry(\
-RegistryItem(key='foo', priority=10, item='Test string.'), \
-RegistryItem(key='baz', priority=20, item=True), \
-RegistryItem(key='bar', priority=30, item=123))"
+RegistryItem(key='foo', priority=10, value='Test string.'), \
+RegistryItem(key='baz', priority=20, value=True), \
+RegistryItem(key='bar', priority=30, value=123))"
             == repr(registry)
         )
+
+    def test_setitem(self, registry: Registry):
+        """Test Registry.__setitem__
+
+        Args:
+            registry (Registry): Test data.
+        """
+
+        # if add item by non-exist key, it will success.
+        registry[("hoge", 15)] = [1, 2, 3]
+        assert "hoge" in registry
+        assert [1, 2, 3] in registry
+        assert [1, 2, 3] == registry["hoge"]
+        assert [1, 2, 3] == registry[1]
+
+        # if add item by exist key, Overwrite to value.
+        registry[("bar", 40)] = ("Test", 123)
+        assert "bar" in registry
+        assert ("Test", 123) in registry
+        assert ("Test", 123) == registry["bar"]
+        assert ("Test", 123) == registry[3]
+
+        # if add item by other then tuple, raise TypeError.
+        with raises(TypeError):
+            registry["bar"] = ("Test", 123)
+
+        # if add item by non-string key, raise TypeError.
+        with raises(TypeError):
+            registry[(True, 123)] = ("Test", 123)
+
+        # if add item by non-int priority, raise TypeError.
+        with raises(TypeError):
+            registry[("bar", "Test")] = ("Test", 123)
 
     def test_keys(self, registry: Registry):
         """Test Registry.keys
