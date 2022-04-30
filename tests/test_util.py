@@ -2,7 +2,6 @@
 # author: @RShirohara
 """novelconverter.util test module.
 
-This module is test of novelconverter.util.
 This test will be run using pytest.
 """
 

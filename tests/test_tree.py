@@ -21,14 +21,6 @@ class TestElement(TreeElement):
         return f"{self.key}: {self.value}"
 
 
-class TestTreeElement:
-    """Test class for TreeElement."""
-
-    def test_str(self):
-        """Test TreeElement.__str__."""
-        assert "foo: Test string." == TestElement("foo", "Test string.").__str__()
-
-
 class TestTreeBuilder:
     """Test class of TreeBuilder."""
 
