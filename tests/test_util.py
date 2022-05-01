@@ -84,7 +84,7 @@ class TestRegistry:
         with raises(IndexError):
             del registry[123]
 
-    def test_getitem(self, registry: Registry):
+    def test_getitem(self, registry: Registry) -> None:
         """Test Registry.__getitem__.
 
         Args:
@@ -118,7 +118,7 @@ class TestRegistry:
         with raises(TypeError):
             registry[("foo", "Bar")]
 
-    def test_iter(self, registry: Registry):
+    def test_iter(self, registry: Registry) -> None:
         """Test Registry.__iter__
 
         Args:
@@ -127,7 +127,7 @@ class TestRegistry:
 
         assert tuple(sorted(datas, key=lambda x: x[1])) == tuple(x for x in registry)
 
-    def test_len(self, registry: Registry):
+    def test_len(self, registry: Registry) -> None:
         """Test Registry.__len__
 
         Args:
@@ -136,7 +136,7 @@ class TestRegistry:
 
         assert 3 == len(registry)
 
-    def test_repr(self, registry: Registry):
+    def test_repr(self, registry: Registry) -> None:
         """Test Registry.__repr__
 
         Args:
@@ -151,7 +151,7 @@ RegistryItem(key='bar', priority=30, value=123))"
             == repr(registry)
         )
 
-    def test_setitem(self, registry: Registry):
+    def test_setitem(self, registry: Registry) -> None:
         """Test Registry.__setitem__
 
         Args:
@@ -184,7 +184,7 @@ RegistryItem(key='bar', priority=30, value=123))"
         with raises(TypeError):
             registry[("bar", "Test")] = ("Test", 123)
 
-    def test_keys(self, registry: Registry):
+    def test_keys(self, registry: Registry) -> None:
         """Test Registry.keys
 
         Args:
@@ -193,7 +193,7 @@ RegistryItem(key='bar', priority=30, value=123))"
 
         assert ("foo", "bar", "baz") == registry.keys()
 
-    def test_pop(self, registry: Registry):
+    def test_pop(self, registry: Registry) -> None:
         """Test Registry.pop
 
         Args:
@@ -208,7 +208,7 @@ RegistryItem(key='bar', priority=30, value=123))"
         with raises(KeyError):
             registry.pop("bazFix")
 
-    def test_priorities(self, registry: Registry):
+    def test_priorities(self, registry: Registry) -> None:
         """Test Registry.priorities.
 
         Args:
@@ -217,7 +217,7 @@ RegistryItem(key='bar', priority=30, value=123))"
 
         assert {"foo": 10, "bar": 30, "baz": 20} == registry.priorities()
 
-    def test_values(self, registry: Registry):
+    def test_values(self, registry: Registry) -> None:
         """Test Registry.values.
 
         Args:
