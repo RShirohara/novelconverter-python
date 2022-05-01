@@ -1,29 +1,30 @@
 # -*- coding: utf-8 -*-
 # author: @RShirohara
 
-
-from . import util
-
-
-def build_preprocessor():
-    """Build the default preprocessors."""
-    processor = PreProcessor()
-    # processor.reg.add(function, name, priority)
-    return processor
+"""NovelConverter Processor module."""
 
 
-def build_postprocessor():
-    """Build the default postprocessors."""
-    processor = PostProcessor()
-    # processor.reg.add(function, name, priority)
-    return processor
+from typing import Callable, TypeAlias
+
+from .util import Registry
+
+Processor: TypeAlias = Callable[[str], str]
 
 
-class PreProcessor(util.Processor):
-    """Process a strings before running parser"""
-    pass
+def process(source: str, processors: Registry[Processor]) -> str:
+    """Process string using processor.
 
+    Args:
+        source (str): Source string.
+        processors (Registry[Processor]): Registry containing processor.
 
-class PostProcessor(util.Processor):
-    """Process a strings after running renderer"""
-    pass
+    Returns:
+        str: Processed source string.
+    """
+
+    result: str = source
+
+    for processor in processors.values():
+        result = processor(result)
+
+    return result
