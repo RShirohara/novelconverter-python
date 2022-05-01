@@ -11,12 +11,12 @@ from .util import Registry
 Renderer: TypeAlias = Callable[[TreeElement], str]
 
 
-def render(tree: DocumentTree, renderer: Registry[Renderer]) -> str:
+def render(tree: DocumentTree, renderers: Registry[Renderer]) -> str:
     """Render DocumentTree using renderer.
 
     Args:
         tree (DocumentTree): Tree storing elemensts of document.
-        renderer (Registry[Renderer]): Registry containing renderer.
+        renderers (Registry[Renderer]): Registry containing renderer.
 
     Returns:
         str: Rendered elements.
@@ -26,8 +26,8 @@ def render(tree: DocumentTree, renderer: Registry[Renderer]) -> str:
 
     for element in tree.elements:
         element_type: str = element.__class__.__name__
-        if element_type in renderer.keys():
-            result += renderer[element_type](element)
+        if element_type in renderers.keys():
+            result += renderers[element_type](element)
         else:
             result += element.__str__()
 

@@ -7,12 +7,12 @@ Attributes:
     DocumentTree:
 """
 
-from abc import ABCMeta, abstractmethod
+from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Any
 
 
-class TreeElement(metaclass=ABCMeta):
+class TreeElement(ABC):
     """Base class of all elements stored in DocumentTree."""
 
     @abstractmethod
