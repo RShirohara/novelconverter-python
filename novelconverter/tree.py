@@ -30,7 +30,7 @@ class DocumentTree:
     """
 
     meta: dict[str, Any] = field(default_factory=dict[str, Any])
-    elements: tuple[TreeElement] = field(default_factory=tuple[TreeElement])
+    elements: tuple[TreeElement, ...] = field(default_factory=tuple[TreeElement, ...])
 
 
 @dataclass
