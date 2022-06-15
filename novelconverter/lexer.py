@@ -13,8 +13,8 @@ from re import Match, Pattern, compile
 from sys import maxsize
 from typing import Iterator, NamedTuple, Optional
 
-from parser import ElementParser
-from util import Registry
+from .parser import ElementParser
+from .util import Registry
 
 
 class TokenizeError(Exception):
@@ -42,23 +42,20 @@ class MatchIterator(Iterator):
     src: str
     reg: InitVar[Registry[ElementParser]]
     pos: int = 0
-    matches: Registry[Iterator[Match]] = field(
-        default_factory=Registry, init=False
-    )
-    current: tuple[Optional[Token], ...] = field(
-        default_factory=tuple, init=False
-    )
+    matches: Registry[Iterator[Match]] = field(default_factory=Registry, init=False)
+    current: dict[str, Token] = field(default_factory=dict, init=False)
 
     def __post_init__(self, reg: Registry[ElementParser]) -> None:
         # Build Iterators
-        iters = Registry()
-        iters.add_items(
+        iters = Registry(
             (
-                item.__class__.__name__,
-                pri,
-                item.pattern.finditer(self.src, pos=self.pos),
+                (
+                    key,
+                    pri,
+                    item.pattern.finditer(self.src, pos=self.pos),
+                )
+                for key, pri, item in reg
             )
-            for key, pri, item in reg
         )
         object.__setattr__(self, "matches", iters)
 
@@ -70,27 +67,34 @@ class MatchIterator(Iterator):
         if (pos <= self.pos) and (pos >= len(self.src)):
             raise IndexError("string index out of range")
         # Get tokens.
-        result: tuple[Optional[Token], ...] = tuple(
-            sorted(
-                (
-                    get_token(key, pri, item, pos)
-                    for key, pri, item in self.matches
-                ),
-                key=lambda x: (x is None, x),
-            )
-        )
+        result: list[Optional[Token]] = []
+        if self.current:
+            for key, token in self.current.items():
+                if pos < token.start:
+                    result.append(token)
+                else:
+                    pri = self.matches.priorities()[key]
+                    item = self.matches[key]
+                    result.append(get_token(key, pri, item, pos))
+        else:
+            result = [
+                get_token(key, pri, item, pos) for key, pri, item, in self.matches
+            ]
+        result = sorted(result, key=lambda x: (x is None, x))
         if all(r is None for r in result):
             raise StopIteration
         # Set result.
-        object.__setattr__(self, "current", result)
-        return result
+        object.__setattr__(
+            self, "current", {token.type: token for token in result if token}
+        )
+        return tuple(result)
 
 
 def build_token(type: str, priority: int, match: Match) -> Token:
     return Token(
         type=type,
         priority=priority,
-        value=match.string,
+        value=match.group(0),
         start=match.start(),
         end=match.end(),
     )
@@ -147,7 +151,7 @@ def tokenize(src: str, parsers: Registry[ElementParser]) -> tuple[Token, ...]:
     while pos <= len(src):
         # Get current.
         try:
-            current, _ = match_iter.next(pos)
+            current, *_ = match_iter.next(pos)
         except StopIteration:
             current = None
         # Add old to result.
@@ -156,21 +160,17 @@ def tokenize(src: str, parsers: Registry[ElementParser]) -> tuple[Token, ...]:
         # Check current.
         if not current:
             break
-        elif (
-            not old
-            or (old.end <= current.start)
-            or (old.priority < current.priority)
-        ):
+        elif not old or (old.end <= current.start) or (old.priority < current.priority):
             old = current
             pos = current.start + 1
     # Check tokens.
     for i in range(len(tokens) + 1):
         old_end: int = tokens[i - 1].end if i > 0 else 0
         cur_start: int = tokens[i].start if i < len(tokens) else len(src) - 1
-        if (cur_start - old_end) >= 1:
+        if (cur_start - old_end) > 1:
             if default_parser:
-                match: Optional[Match] = default_parser.pattern.match(
-                    src, pos=old_end + 1, endpos=cur_start - 1
+                match: Optional[Match] = default_parser.pattern.search(
+                    src, pos=old_end, endpos=cur_start
                 )
                 if match:
                     result.append(
@@ -181,10 +181,10 @@ def tokenize(src: str, parsers: Registry[ElementParser]) -> tuple[Token, ...]:
                         )
                     )
                 else:
-                    raise TokenizeError()
+                    raise TokenizeError(tokens[i])
             else:
-                raise TokenizeError()
+                raise TokenizeError(tokens[i])
         # Add matched token to result.
         if i < len(tokens):
             result.append(tokens[i])
-    return tuple(tokens)
+    return tuple(result)
