@@ -1,5 +1,5 @@
-# -*- coding: utf-8
-# author: @RShirohara
+# coding: utf-8
+# author: Ray Shirohara
 
 __version__ = "5.0.0.dev0"
 __doc__ = f"""

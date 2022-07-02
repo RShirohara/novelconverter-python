@@ -1,2 +1,2 @@
-# -*- coding: utf-8 -*-
-# author: @RShirohara
+# coding: utf-8
+# author: Ray Shirohara
