@@ -10,16 +10,19 @@ from typing import Any
 
 
 class TreeElement(ABC):
-    """Base class of all tree element.
+    """Base class of all tree element."""
 
-    Attributes:
-        default (str): Text returned if the corresponding renderer does not exists.
-    """
-
-    @property
     @abstractmethod
-    def default(self) -> str:
-        """Text returned if the corresponding renderer does not exists."""
+    def __repr__(self) -> str:
+        ...
+
+    @abstractmethod
+    def __str__(self) -> str:
+        """Get the text if the corresponding renderer does not exists.
+
+        Returns:
+            str: text displayed if the corresponding renderer does not exists.
+        """
 
 
 @dataclass(frozen=True)
