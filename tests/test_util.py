@@ -190,7 +190,17 @@ class TestRegistry:
         assert expected == actual
 
     def test_priorities(self, registry: Registry[Any]) -> None:
-        ...
+        """Test Registry.priorities.
+
+        Args:
+            registry (Registry[Any]): Test data.
+        """
+
+        expected: tuple[RegistryKey, ...] = tuple(
+            key for key, _ in sorted(test_data, key=lambda x: x[0])
+        )
+        actual: tuple[RegistryKey, ...] = tuple(registry.priorities())
+        assert expected == actual
 
     def test_values(self, registry: Registry[Any]) -> None:
         """Test Registry.values

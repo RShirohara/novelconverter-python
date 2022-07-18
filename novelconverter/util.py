@@ -44,7 +44,15 @@ class RegistryKey(NamedTuple):
         return equals
 
     def __lt__(self, __x: tuple[Any, ...]) -> bool:
-        return (self.key, self.priority) < __x
+        match __x:
+            case RegistryKey():
+                return (self.priority, self.key) < (__x.priority, __x.key)
+            case tuple() if len(__x) == 2 and isinstance(__x[0], str) and isinstance(
+                __x[1], int
+            ):
+                return (self.priority, self.key) < (__x[1], __x[0])
+            case _:
+                return False
 
     def __hash__(self) -> int:
         return hash((self.key, self.priority))
@@ -173,10 +181,15 @@ class Registry(MutableMapping[(str | RegistryKey), T]):
                     else 0
                 )
             case tuple() if len(key) == 2:
-                value_key = key[0]
-                value_priority = key[1]
+                value_key: str = key[0]
+                value_priority: int = key[1]
             case _:
                 raise TypeError("registry indices on add must be str or tuple")
+
+        if not isinstance(value_key, str):
+            raise TypeError("registry key indices must be string")
+        if not isinstance(value_priority, int):
+            raise TypeError("registry priority indices must be int")
 
         self.__is_sorted = False
         self.__data[value_key] = value
@@ -191,12 +204,23 @@ class Registry(MutableMapping[(str | RegistryKey), T]):
         self.__key_cache = tuple(key for key, _ in sorted_priority)
         self.__is_sorted = True
 
-    def keys(self) -> KeysView[RegistryKey]:
-        """Return keys registred in Registry.
+    def keys(self) -> KeysView[str]:
+        """Return keys registered in Registry.
 
         Returns:
             KeysView[RegistryKey]: Keys registered in Registry.
         """
+
+        self.__sort()
+        return {key: key for key in self.__key_cache}.keys()
+
+    def priorities(self) -> KeysView[RegistryKey]:
+        """Return key and priority pairs registered in Registry.
+
+        Returns:
+            KeysView[RegistryKey]: Key and priority pairs.
+        """
+
         self.__sort()
         return {
             RegistryKey(key, self.__priorities[key]): key for key in self.__key_cache
