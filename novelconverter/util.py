@@ -107,7 +107,7 @@ class Registry(MutableMapping[(str | RegistryKey), T]):
             case tuple() if len(key) == 2:
                 target = key[0]
             case _:
-                raise TypeError("registry indices on delete must be entegers or string")
+                raise TypeError("registry indices on delete must be integers or string")
 
         if (target not in self.__priorities.keys()) or (
             isinstance(key, tuple) and key[1] != self.__priorities[target]

@@ -43,7 +43,7 @@ class TestRegistry:
         """
 
         expected: tuple[RegistryKey, ...] = tuple(sorted((key for key, _ in test_data)))
-        actual: tuple[RegistryKey, ...] = tuple(x for x in Registry)
+        actual: tuple[RegistryKey, ...] = tuple(x for x in registry)
         assert expected == actual
 
     def test_len(self, registry: Registry[Any]) -> None:
