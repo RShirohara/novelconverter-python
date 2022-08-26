@@ -2,9 +2,11 @@
 name = "novelconverter"
 version = "5.0.0.dev0"
 description = "Convert syntax for Web-Novel sites."
-readme = "README.md"
-authors = ["Ray Shirohara <RShirohara@gmail.com>"]
 license = "MIT"
+authors = ["Ray Shirohara <RShirohara@gmail.com>"]
+readme = "README.md"
+repository = "https://github.com/RShirohara/novelconverter-python"
+classifiers = ["Topic :: Text Processing"]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
