@@ -4,6 +4,5 @@
     "python.formatting.provider": "black",
     "python.languageServer": "Pylance",
     "python.linting.pylintEnabled": true,
-    "python.testing.pytestArgs": ["tests"],
     "python.testing.pytestEnabled": true
 }

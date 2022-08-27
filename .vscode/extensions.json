@@ -1,3 +1,6 @@
 {
-    "recommendations": ["ms-python.vscode-pylance"]
+    "recommendations": [
+        "ms-python.vscode-pylance",
+        "ryanluker.vscode-coverage-gutters"
+    ]
 }
