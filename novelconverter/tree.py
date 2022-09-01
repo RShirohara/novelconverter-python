@@ -1,10 +1,9 @@
 """The definition for NovelConverter AST node types."""
 
-from abc import ABC
-from typing import Optional
+from typing import Protocol
 
 
-class NovelNode(ABC):
+class NovelNode(Protocol):
     """Basic NovelNode.
 
     Real NovelNode implemention has more attributes.
@@ -12,10 +11,9 @@ class NovelNode(ABC):
 
     type: str
     raw: str
-    parent: Optional["NovelNode"]
 
 
-class NovelTextNode(NovelNode):
+class NovelTextNode(NovelNode, Protocol):
     """Text Node.
 
     Text Node has inline value.
@@ -24,10 +22,10 @@ class NovelTextNode(NovelNode):
     value: str
 
 
-class NovelParentNode(NovelNode):
+class NovelParentNode(NovelNode, Protocol):
     """Parent Node.
 
     Parent Node has children nodes that are consist of `NovelNode` or `NovelTextNode`.
     """
 
-    children: tuple[NovelNode | NovelTextNode, ...]
+    children: tuple[NovelNode, ...]
